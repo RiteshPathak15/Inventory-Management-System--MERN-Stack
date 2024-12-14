@@ -9,7 +9,7 @@ dotenv.config({
 const connectDB = async () => {
   try {
     // Fetch the connection string from environment variables
-    const mongoDBURL = `mongodb+srv://Ritesh_Pathak:rits6184@ritscluster0.8fjww.mongodb.net/Inventory`;
+    const mongoDBURL = `mongodb+srv://Ritesh_Pathak:rits6184@ritscluster0.8fjww.mongodb.net/Inventory` || process.env.MONGODB_URL;
     console.log("MongoDB Connection String: ", mongoDBURL);
 
     if (!mongoDBURL) {
