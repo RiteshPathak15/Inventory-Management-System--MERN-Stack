@@ -2,15 +2,12 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 // Load environment variables
-dotenv.config({
-  path: "./.env",
-});
+dotenv.config();
 
 const connectDB = async () => {
   try {
     // Fetch the connection string from environment variables
-    const mongoDBURL = `mongodb+srv://Ritesh_Pathak:rits6184@ritscluster0.8fjww.mongodb.net/Inventory` || process.env.MONGODB_URL;
-    console.log("MongoDB Connection String: ", mongoDBURL);
+    const mongoDBURL = process.env.MONGODB_URL;
 
     if (!mongoDBURL) {
       throw new Error("MONGODB_URL is not defined in environment variables");
