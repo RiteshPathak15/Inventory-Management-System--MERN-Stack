@@ -1,19 +1,27 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import LoginScreen from "./pages/Login";
-import RegisterScreen from "./pages/Register";
-import HomeScreen from "./pages/Home";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Sidebar from "./components/Navbar/Sidebar.jsx";
+import Dashboard from "./pages/Dashboard";
+// import Inventory from "./pages/Inventory";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<HomeScreen />} />
-        <Route path="/login" element={<LoginScreen />} />
-        <Route path="/register" element={<RegisterScreen />} />
-      </Routes>
-    </div>
+    <Router>
+      <div className="flex">
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Main Content */}
+        <div className="flex-1 bg-gray-100 p-6">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            {/* <Route path="/inventory" element={<Inventory />} /> */}
+            {/* Add other routes here */}
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;
