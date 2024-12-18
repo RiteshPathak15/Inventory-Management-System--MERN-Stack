@@ -1,8 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Sidebar from "./components/Navbar/Sidebar.jsx";
-import Dashboard from "./pages/Dashboard";
-// import Inventory from "./pages/Inventory";
+import Sidebar from "./components/Navbar/Navbar.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Inventory from "./pages/Inventory.jsx";
+import Footer from "./components/Footer/Footer.jsx"
 
 function App() {
   return (
@@ -12,13 +13,14 @@ function App() {
         <Sidebar />
 
         {/* Main Content */}
-       
+        <div className="flex-1 p-6">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            {/* <Route path="/inventory" element={<Inventory />} /> */}
-            {/* Add other routes here */}
+            <Route path="/inventory" element={<Inventory />} />
           </Routes>
         </div>
+      </div>
+      <Footer/>
     </Router>
   );
 }
