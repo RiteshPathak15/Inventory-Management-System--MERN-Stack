@@ -8,17 +8,17 @@ const Navbar = () => {
         <h1 className="text-lg font-bold mb-6">Hardware Inventory</h1>
         <ul className="space-y-4">
           <li>
-            <Link to="/" className="block hover:text-gray-300">
+            <Link to="/" className="block hover:underline underline-offset-4 hover:text-gray-300">
               Dashboard
             </Link>
           </li>
           <li>
-            <Link to="/inventory" className="block hover:text-gray-300">
+            <Link to="/inventory" className="block hover:underline underline-offset-4 hover:text-gray-300">
               Inventory
             </Link>
           </li>
           <li>
-            <Link to="/settings" className="block hover:text-gray-300">
+            <Link to="/settings" className="block hover:underline underline-offset-4 hover:text-gray-300">
               Settings
             </Link>
           </li>
