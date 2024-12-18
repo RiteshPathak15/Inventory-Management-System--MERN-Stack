@@ -1,15 +1,60 @@
-const inventory = [
-    { id: 1, name: "Hammer", category: "Tools", stock: 50, price: 15.99 },
-    { id: 2, name: "Nails (1kg)", category: "Materials", stock: 200, price: 5.49 },
-    { id: 3, name: "Screwdriver", category: "Tools", stock: 30, price: 7.99 },
-    { id: 4, name: "Paint Bucket", category: "Paint", stock: 20, price: 25.0 },
-    { id: 5, name: "Drill Machine", category: "Tools", stock: 10, price: 99.99 },
-    { id: 6, name: "Wood Plank", category: "Materials", stock: 15, price: 12.5 },
-  ];
-  
-  const getInventory = (req, res) => {
+import Inventory from "../models/inventory.models.js";
+
+const getInventory = async (req, res) => {
+  try {
+    const inventory = await Inventory.find();
     res.status(200).json(inventory);
-  };
-  
-  export  { getInventory };
-  
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const createInventoryItem = async (req, res) => {
+  try {
+    const newItem = new Inventory(req.body);
+    await newItem.save();
+    res.status(201).json(newItem);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const updateInventory = async (req, res) => {
+  const { id } = req.params; 
+  const updateData = req.body; 
+
+  try {
+    const updatedItem = await Inventory.findByIdAndUpdate(id, updateData, {
+      new: true, 
+      runValidators: true, 
+    });
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    res.status(200).json(updatedItem);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to update item", error: error.message });
+  }
+};
+
+const deleteInventory = async (req, res) => {
+  const { id } = req.params; 
+
+  try {
+    const deletedItem = await Inventory.findByIdAndDelete(id); 
+
+    if (!deletedItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    res.status(200).json({ message: "Item deleted successfully", deletedItem });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete item", error: error.message });
+  }
+};
+
+export { getInventory, createInventoryItem, updateInventory ,deleteInventory};

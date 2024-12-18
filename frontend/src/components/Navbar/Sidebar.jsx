@@ -1,23 +1,26 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <div className="w-64 bg-white text-blue-700 p-4">
-      <div className="text-lg font-semibold mb-6">Hardware Shop</div>
-      <ul>
-        <li>
-          <Link to="/" className="block py-2 px-4 hover:bg-blue-300">
-            Dashboard
-          </Link>
-        </li>
-        <li>
-          <Link to="/inventory" className="block py-2 px-4  hover:bg-blue-300">
-            Inventory
-          </Link>
-        </li>
-        {/* Add other links */}
-      </ul>
+    <div className="w-64 h-screen bg-gray-900 text-gray-200 fixed flex flex-col">
+      <h1 className="text-2xl font-bold text-center py-4 border-b border-gray-700">
+        Inventory App
+      </h1>
+      <nav className="flex-1">
+        <ul className="space-y-4 mt-6">
+          <li>
+            <Link
+              to="/"
+              className="flex items-center px-6 py-3 text-lg hover:bg-gray-800 rounded-md"
+            >
+              Dashboard
+            </Link>
+          </li>
+        </ul>
+      </nav>
+      <footer className="py-4 text-center text-sm border-t border-gray-700">
+        © {new Date().getFullYear()} Inventory App
+      </footer>
     </div>
   );
 };

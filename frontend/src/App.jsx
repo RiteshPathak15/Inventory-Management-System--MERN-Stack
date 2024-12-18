@@ -12,14 +12,13 @@ function App() {
         <Sidebar />
 
         {/* Main Content */}
-        <div className="flex-1 bg-gray-100 p-6">
+       
           <Routes>
             <Route path="/" element={<Dashboard />} />
             {/* <Route path="/inventory" element={<Inventory />} /> */}
             {/* Add other routes here */}
           </Routes>
         </div>
-      </div>
     </Router>
   );
 }
