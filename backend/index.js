@@ -9,6 +9,8 @@ import productRoutes from "./src/routes/productRoutes.js";
 import supplierRoutes from "./src/routes/supplierRoutes.js";
 import orderRoutes from "./src/routes/orderRoutes.js";
 import reportRoutes from "./src/routes/reportRoutes.js";
+import sellRoutes from "./src/routes/sellRoutes.js";
+
 
 dotenv.config();
 
@@ -32,6 +34,7 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/report", reportRoutes);
+app.use('/api/sell', sellRoutes);
 app.use("/api", userRoutes);
 
 app.get("/", (req, res) => {

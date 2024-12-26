@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import PrivateRoute from "./components/Allcomp/PrivateRoute";
+import SellProduct from "./pages/SellProduct";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,6 +37,7 @@ function App() {
         <div className="flex-1">
           <Routes>
             <Route path="/" element={<PrivateRoute isLoggedIn={isLoggedIn}><Dashboard /></PrivateRoute>} />
+            <Route path="/sell" element={<SellProduct />} />
             <Route path="/inventory" element={<PrivateRoute isLoggedIn={isLoggedIn}><InventoryManagement /></PrivateRoute>} />
             <Route path="/suppliers" element={<PrivateRoute isLoggedIn={isLoggedIn}><SupplierManagement /></PrivateRoute>} />
             <Route path="/orders" element={<PrivateRoute isLoggedIn={isLoggedIn}><OrdersManagement /></PrivateRoute>} />

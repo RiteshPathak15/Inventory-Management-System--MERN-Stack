@@ -10,6 +10,7 @@ import {
   FaSignInAlt,
   FaUserPlus,
   FaBars,
+  FaShoppingCart,
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -69,6 +70,15 @@ const Sidebar = () => {
             >
               <FaClipboardList />
               <span>Order</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/sell"
+              className="flex items-center space-x-2 hover:text-blue-400"
+            >
+              <FaShoppingCart />
+              <span>Product Purchase</span>
             </Link>
           </li>
           <li>
