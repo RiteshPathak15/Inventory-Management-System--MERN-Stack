@@ -1,6 +1,6 @@
 import Inventory from "../models/Inventory.js";
 import { upload } from "../middlewares/multer.middlewares.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import Sale from "../models/Sale.js";
 
 export const getInventory = async (req, res) => {

@@ -1,6 +1,6 @@
 import Supplier from "../models/Supplier.js";
 import { upload } from "../middlewares/multer.middlewares.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 
 export const getSuppliers = async (req, res) => {
   try {

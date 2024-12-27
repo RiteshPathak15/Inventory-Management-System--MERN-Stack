@@ -1,5 +1,5 @@
 import express from 'express';
-import { getSalesReport, getOrdersReport, getInventoryReport } from '../controllers/reportController.js';
+import { getSalesReport, getOrdersReport, getInventoryReport } from '../controllers/report.controllers.js';
 
 const router = express.Router();
 
