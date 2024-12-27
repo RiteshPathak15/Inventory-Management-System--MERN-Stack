@@ -1,8 +1,8 @@
-import Inventory from "../models/Inventory.js";
-import Sale from "../models/Sale.js";
-import Supplier from "../models/Supplier.js";
-import Order from "../models/Order.js";
-import { User } from "../models/User.js"; // Import User model
+import Inventory from "../models/Inventory.models.js";
+import Sale from "../models/Sale.models.js";
+import Supplier from "../models/Supplier.models.js";
+import Order from "../models/Order.models.js";
+import { User } from "../models/User.models.js"; // Import User model
 
 export const getDashboardData = async (req, res) => {
   try {

@@ -1,5 +1,5 @@
-import Inventory from '../models/Inventory.js';
-import Sale from '../models/Sale.js';
+import Inventory from '../models/Inventory.models.js';
+import Sale from '../models/Sale.models.js';
 
 // @desc    Sell a product
 // @route   POST /api/sell

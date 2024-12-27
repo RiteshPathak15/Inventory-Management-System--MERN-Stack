@@ -1,6 +1,6 @@
-import Sale from '../models/Sale.js';
-import Order from '../models/Order.js';
-import Inventory from '../models/Inventory.js';
+import Sale from '../models/Sale.models.js';
+import Order from '../models/Order.models.js';
+import Inventory from '../models/Inventory.models.js';
 
 export const getSalesReport = async (req, res) => {
   try {

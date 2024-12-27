@@ -1,4 +1,4 @@
-import Supplier from "../models/Supplier.js";
+import Supplier from "../models/Supplier.models.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 
