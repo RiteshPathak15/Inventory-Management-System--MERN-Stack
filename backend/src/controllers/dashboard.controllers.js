@@ -4,7 +4,7 @@ import Supplier from "../models/Supplier.models.js";
 import Order from "../models/Order.models.js";
 import { User } from "../models/User.models.js"; // Import User model
 
-export const getDashboardData = async (req, res) => {
+const getDashboardData = async (req, res) => {
   try {
     // Fetch summary data
     const totalRevenue = await Sale.aggregate([
@@ -86,7 +86,7 @@ export const getDashboardData = async (req, res) => {
   }
 };
 
-export const getChartData = async (req, res) => {
+const getChartData = async (req, res) => {
   try {
     const chartData = await Order.aggregate([
       {
@@ -109,3 +109,4 @@ export const getChartData = async (req, res) => {
   }
 };
 
+export {getDashboardData,getChartData}

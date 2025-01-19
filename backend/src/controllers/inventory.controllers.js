@@ -3,7 +3,7 @@ import { upload } from "../middlewares/multer.middlewares.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import Sale from "../models/Sale.models.js";
 
-export const getInventory = async (req, res) => {
+const getInventory = async (req, res) => {
   try {
     const inventory = await Inventory.find();
     res.status(200).json(inventory);
@@ -12,7 +12,7 @@ export const getInventory = async (req, res) => {
   }
 };
 
-export const addInventory = [
+const addInventory = [
   upload.single("image"),
   async (req, res) => {
     const {
@@ -62,7 +62,7 @@ export const addInventory = [
   },
 ];
 
-export const updateInventory = async (req, res) => {
+const updateInventory = async (req, res) => {
   const { id } = req.params;
   const { name, quantity, price, category, batch, supplier, image } = req.body;
 
@@ -80,7 +80,7 @@ export const updateInventory = async (req, res) => {
   }
 };
 
-export const deleteInventory = async (req, res) => {
+const deleteInventory = async (req, res) => {
   const { id } = req.params;
   try {
     await Inventory.findByIdAndDelete(id);
@@ -90,7 +90,7 @@ export const deleteInventory = async (req, res) => {
   }
 };
 
-export const getChartData = async (req, res) => {
+const getChartData = async (req, res) => {
   try {
     const inventory = await Inventory.find();
     const sales = await Sale.find();
@@ -124,3 +124,5 @@ export const getChartData = async (req, res) => {
     res.status(500).json({ message: "Error fetching chart data", error });
   }
 };
+
+export{getInventory,addInventory,updateInventory,deleteInventory,getChartData}

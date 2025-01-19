@@ -2,7 +2,7 @@ import Sale from '../models/Sale.models.js';
 import Order from '../models/Order.models.js';
 import Inventory from '../models/Inventory.models.js';
 
-export const getSalesReport = async (req, res) => {
+const getSalesReport = async (req, res) => {
   try {
     const salesReport = await Sale.aggregate([
       {
@@ -21,7 +21,7 @@ export const getSalesReport = async (req, res) => {
   }
 };
 
-export const getOrdersReport = async (req, res) => {
+const getOrdersReport = async (req, res) => {
   try {
     const ordersReport = await Order.aggregate([
       {
@@ -40,7 +40,7 @@ export const getOrdersReport = async (req, res) => {
   }
 };
 
-export const getInventoryReport = async (req, res) => {
+const getInventoryReport = async (req, res) => {
   try {
     const inventoryReport = await Inventory.aggregate([
       {
@@ -57,3 +57,5 @@ export const getInventoryReport = async (req, res) => {
     res.status(500).json({ message: 'Error fetching inventory report', error });
   }
 };
+
+export{getSalesReport,getOrdersReport,getInventoryReport}

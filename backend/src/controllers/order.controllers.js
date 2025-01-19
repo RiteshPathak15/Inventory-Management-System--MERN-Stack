@@ -1,6 +1,6 @@
 import Order from '../models/Order.models.js';
 
-export const getOrders = async (req, res) => {
+const getOrders = async (req, res) => {
   try {
     const orders = await Order.find();
     res.status(200).json(orders);
@@ -9,7 +9,7 @@ export const getOrders = async (req, res) => {
   }
 };
 
-export const addOrder = async (req, res) => {
+const addOrder = async (req, res) => {
   const { productName, productId, category, orderValue, quantity, unit, buyingPrice, deliveryDate, notifyOnDelivery } = req.body;
 
   try {
@@ -32,3 +32,5 @@ export const addOrder = async (req, res) => {
     res.status(400).json({ message: 'Error adding order', error });
   }
 };
+
+export{getOrders,addOrder}

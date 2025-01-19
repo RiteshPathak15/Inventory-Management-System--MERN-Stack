@@ -2,7 +2,7 @@ import Supplier from "../models/Supplier.models.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 
-export const getSuppliers = async (req, res) => {
+const getSuppliers = async (req, res) => {
   try {
     const suppliers = await Supplier.find();
     res.status(200).json(suppliers);
@@ -11,7 +11,7 @@ export const getSuppliers = async (req, res) => {
   }
 };
 
-export const addSupplier = [
+const addSupplier = [
   upload.single("image"),
   async (req, res) => {
     const {
@@ -47,3 +47,5 @@ export const addSupplier = [
     }
   },
 ];
+
+export{getSuppliers,addSupplier}
