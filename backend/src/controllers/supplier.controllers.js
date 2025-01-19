@@ -1,51 +1,53 @@
-import Supplier from "../models/Supplier.models.js";
-import { upload } from "../middlewares/multer.middlewares.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import Supplier from '../models/Supplier.models.js';
 
-const getSuppliers = async (req, res) => {
+const getAllSuppliers = async (req, res) => {
   try {
     const suppliers = await Supplier.find();
     res.status(200).json(suppliers);
   } catch (error) {
-    res.status(400).json({ message: "Error fetching suppliers", error });
+    res.status(500).json({ message: 'Server error', error });
   }
 };
 
-const addSupplier = [
-  upload.single("image"),
-  async (req, res) => {
-    const {
-      name,
-      product,
-      category,
-      buyingPrice,
-      contactNumber,
-      takesReturns,
-      email,
-    } = req.body;
-    const localFilePath = req.file.path;
+const createSupplier = async (req, res) => {
+  try {
+    const newSupplier = new Supplier(req.body);
+    const savedSupplier = await newSupplier.save();
+    res.status(201).json({ message: 'Supplier created successfully', newSupplier: savedSupplier });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
 
-    try {
-      const result = await uploadOnCloudinary(localFilePath);
-      const imageUrl = result?.url || "";
+const updateSupplier = async (req, res) => {
+  try {
+    const supplierId = req.params.id;
+    const updatedData = req.body;
+    const updatedSupplier = await Supplier.findByIdAndUpdate(supplierId, updatedData, { new: true });
 
-      const newSupplier = new Supplier({
-        image: imageUrl,
-        name,
-        product,
-        category,
-        buyingPrice,
-        contactNumber,
-        takesReturns,
-        email,
-      });
-
-      await newSupplier.save();
-      res.status(201).json({ message: "Supplier added successfully", newSupplier });
-    } catch (error) {
-      res.status(400).json({ message: "Error adding supplier", error });
+    if (!updatedSupplier) {
+      return res.status(404).json({ message: 'Supplier not found' });
     }
-  },
-];
 
-export{getSuppliers,addSupplier}
+    res.status(200).json({ updatedSupplier });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+const deleteSupplier = async (req, res) => {
+  try {
+    const supplierId = req.params.id;
+    const deletedSupplier = await Supplier.findByIdAndDelete(supplierId);
+
+    if (!deletedSupplier) {
+      return res.status(404).json({ message: 'Supplier not found' });
+    }
+
+    res.status(200).json({ message: 'Supplier deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+export{getAllSuppliers,createSupplier,updateSupplier,deleteSupplier}

@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import NewOrder from '../components/orders/NewOrder';
-import { 
-  TotalRevenueCard, 
-  TotalOrdersCard, 
-  AverageOrderValueCard, 
-  TotalQuantityCard, 
-  AverageQuantityPerOrderCard, 
-  MostCommonCategoryCard 
-} from '../components/orders/OrderSummaryCard';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import NewOrder from "../components/orders/NewOrder";
+import {
+  TotalRevenueCard,
+  TotalOrdersCard,
+  AverageOrderValueCard,
+  TotalQuantityCard,
+  AverageQuantityPerOrderCard,
+  MostCommonCategoryCard,
+} from "../components/orders/OrderSummaryCard";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const OrdersManagement = () => {
   const [orders, setOrders] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchOrders();
@@ -20,10 +23,14 @@ const OrdersManagement = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('/api/orders');
+      setLoading(true);
+      const response = await axios.get("/api/orders");
       setOrders(response.data);
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      toast.error("Error fetching orders");
+      console.error("Error fetching orders:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,16 +41,18 @@ const OrdersManagement = () => {
   const handleOrderAdded = (newOrder) => {
     setOrders((prevOrders) => [...prevOrders, newOrder]);
     setShowForm(false); // Hide the form after adding the order
+    toast.success("Order added successfully!");
   };
 
   return (
     <div className="p-6 bg-white shadow rounded-lg">
+      <ToastContainer />
       <h2 className="text-3xl font-bold mb-6">Orders Management</h2>
       <button
         onClick={handleAddOrderClick}
         className="bg-blue-500 text-white rounded-lg px-4 py-2 mb-4"
       >
-        {showForm ? 'Hide Form' : 'Add Order'}
+        {showForm ? "Hide Form" : "Add Order"}
       </button>
       {showForm && <NewOrder onOrderAdded={handleOrderAdded} />}
       <div className="mt-6">
@@ -57,36 +66,52 @@ const OrdersManagement = () => {
           <MostCommonCategoryCard orders={orders} />
         </div>
         <h3 className="text-2xl font-semibold mb-4 mt-6">Orders List</h3>
-        <table className="w-full bg-gray-100 rounded-lg shadow-lg mt-6">
-          <thead className="bg-gray-200">
-            <tr className="text-gray-700">
-              <th className="px-6 py-4 font-medium text-left">Product Name</th>
-              <th className="px-6 py-4 font-medium text-left">Product ID</th>
-              <th className="px-6 py-4 font-medium text-left">Category</th>
-              <th className="px-6 py-4 font-medium text-left">Order Value</th>
-              <th className="px-6 py-4 font-medium text-left">Quantity</th>
-              <th className="px-6 py-4 font-medium text-left">Unit</th>
-              <th className="px-6 py-4 font-medium text-left">Buying Price</th>
-              <th className="px-6 py-4 font-medium text-left">Delivery Date</th>
-              <th className="px-6 py-4 font-medium text-left">Notify on Delivery</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} className="border-t hover:bg-gray-50">
-                <td className="px-6 py-4">{order.productName}</td>
-                <td className="px-6 py-4">{order.productId}</td>
-                <td className="px-6 py-4">{order.category}</td>
-                <td className="px-6 py-4">{order.orderValue}</td>
-                <td className="px-6 py-4">{order.quantity}</td>
-                <td className="px-6 py-4">{order.unit}</td>
-                <td className="px-6 py-4">{order.buyingPrice}</td>
-                <td className="px-6 py-4">{new Date(order.deliveryDate).toLocaleDateString()}</td>
-                <td className="px-6 py-4">{order.notifyOnDelivery ? 'Yes' : 'No'}</td>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <table className="w-full bg-gray-100 rounded-lg shadow-lg mt-6">
+            <thead className="bg-gray-200">
+              <tr className="text-gray-700">
+                <th className="px-6 py-4 font-medium text-left">
+                  Product Name
+                </th>
+                <th className="px-6 py-4 font-medium text-left">Product ID</th>
+                <th className="px-6 py-4 font-medium text-left">Category</th>
+                <th className="px-6 py-4 font-medium text-left">Order Value</th>
+                <th className="px-6 py-4 font-medium text-left">Quantity</th>
+                <th className="px-6 py-4 font-medium text-left">Unit</th>
+                <th className="px-6 py-4 font-medium text-left">
+                  Buying Price
+                </th>
+                <th className="px-6 py-4 font-medium text-left">
+                  Delivery Date
+                </th>
+                <th className="px-6 py-4 font-medium text-left">
+                  Notify on Delivery
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order._id} className="border-t hover:bg-gray-50">
+                  <td className="px-6 py-4">{order.productName}</td>
+                  <td className="px-6 py-4">{order.productId}</td>
+                  <td className="px-6 py-4">{order.category}</td>
+                  <td className="px-6 py-4">{order.orderValue}</td>
+                  <td className="px-6 py-4">{order.quantity}</td>
+                  <td className="px-6 py-4">{order.unit}</td>
+                  <td className="px-6 py-4">{order.buyingPrice}</td>
+                  <td className="px-6 py-4">
+                    {new Date(order.deliveryDate).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4">
+                    {order.notifyOnDelivery ? "Yes" : "No"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

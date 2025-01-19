@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const AddSupplier = () => {
+const AddSupplier = ({ fetchSuppliers, onSupplierAdded }) => {
   const [supplier, setSupplier] = useState({
     image: null,
     name: "",
@@ -13,7 +14,6 @@ const AddSupplier = () => {
     takesReturns: false,
     email: "",
   });
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -28,25 +28,42 @@ const AddSupplier = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Form validation
+    if (
+      !supplier.name ||
+      !supplier.product ||
+      !supplier.category ||
+      !supplier.buyingPrice ||
+      !supplier.contactNumber ||
+      !supplier.email
+    ) {
+      toast.error("All fields are required!");
+      return;
+    }
+
     const formData = new FormData();
     Object.keys(supplier).forEach((key) => {
       formData.append(key, supplier[key]);
     });
 
     try {
-      await axios.post("/api/suppliers", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const { data } = await axios.post("/api/suppliers", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      navigate("/");
+      toast.success("Supplier added successfully!");
+      onSupplierAdded(data.newSupplier);
     } catch (error) {
-      console.error("Error adding supplier:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Error occurred during supplier addition"
+      );
     }
   };
 
   return (
     <div className="p-6 bg-white shadow rounded-lg">
+      <ToastContainer />
       <h2 className="text-3xl font-bold mb-6">New Supplier</h2>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-4">
@@ -141,7 +158,18 @@ const AddSupplier = () => {
         <div className="flex justify-between">
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() =>
+              setSupplier({
+                image: null,
+                name: "",
+                product: "",
+                category: "",
+                buyingPrice: "",
+                contactNumber: "",
+                takesReturns: false,
+                email: "",
+              })
+            }
             className="bg-red-500 text-white rounded-lg px-4 py-2"
           >
             Discard

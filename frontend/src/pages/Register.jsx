@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +12,6 @@ const Register = () => {
     password: "",
   });
   const [avatar, setAvatar] = useState(null);
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,6 +24,13 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Form validation
+    if (!formData.fullname || !formData.username || !formData.email || !formData.password) {
+      toast.error("All fields are required!");
+      return;
+    }
+
     const form = new FormData();
     form.append("fullname", formData.fullname);
     form.append("username", formData.username);
@@ -36,15 +44,16 @@ const Register = () => {
       const { data } = await axios.post("/api/register", form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setMessage(data.message);
+      toast.success(data.message);
       navigate("/login"); // Redirect to login after successful registration
     } catch (error) {
-      setMessage(error.response?.data?.message || "Error occurred");
+      toast.error(error.response?.data?.message || "Error occurred during registration");
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md space-y-6">
+      <ToastContainer />
       <h2 className="text-2xl font-bold text-center">Register</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -91,7 +100,6 @@ const Register = () => {
           Register
         </button>
       </form>
-      {message && <p className="text-center text-red-500">{message}</p>}
     </div>
   );
 };

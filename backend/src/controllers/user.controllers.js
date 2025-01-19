@@ -10,30 +10,21 @@ const registerUser = async (req, res) => {
   try {
     const { fullname, username, email, password } = req.body;
     const avatarFile = req.file;
-
-    // Validation
     if (!fullname || !username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
-    // Check if email or username already exists
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
     });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "Email or username already registered" });
+      return res.status(400).json({ message: "Email or username already registered" });
     }
 
-    // Upload avatar to Cloudinary
     let avatarUrl = "";
     if (avatarFile) {
       const uploadResult = await uploadOnCloudinary(avatarFile.path);
       avatarUrl = uploadResult.url;
     }
-
-    // Create user
     const newUser = new User({
       fullname,
       username,
@@ -41,16 +32,14 @@ const registerUser = async (req, res) => {
       password,
       avatar: avatarUrl,
     });
-
-    // Save user
     await newUser.save();
-
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error with registration:", error);
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
+
 
 // Login User
 const loginUser = async (req, res) => {
