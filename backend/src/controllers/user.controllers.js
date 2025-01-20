@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import { User } from "../models/User.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import dotenv from "dotenv";
@@ -63,7 +63,7 @@ const loginUser = async (req, res) => {
     }
 
     // Validate password
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcryptjs.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
@@ -209,7 +209,7 @@ const updateUserProfile = async (req, res) => {
 
     const updatedData = { fullname, email };
     if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcryptjs.hash(password, 10);
       updatedData.password = hashedPassword;
     }
 

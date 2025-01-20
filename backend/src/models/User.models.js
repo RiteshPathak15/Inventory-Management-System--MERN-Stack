@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 const userSchema = new Schema(
   {
@@ -54,7 +54,7 @@ const userSchema = new Schema(
 // Hash the password before saving the user
 userSchema.pre("save", async function (next) {
   if (this.isModified("password") && this.password) {
-    this.password = await bcrypt.hash(this.password, 10); // Add salt rounds for better security
+    this.password = await bcryptjs.hash(this.password, 10); // Add salt rounds for better security
   }
   next();
 });
@@ -72,9 +72,9 @@ userSchema.post("save", function (error, next) {
   }
 });
 
-// Validate password (compare bcrypt password and plain password)
+// Validate password (compare bcryptjs password and plain password)
 userSchema.methods.isPasswordCorrect = async function (password) {
-  return bcrypt.compare(password, this.password);
+  return bcryptjs.compare(password, this.password);
 };
 
 // Generate Access Token
