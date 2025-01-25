@@ -3,66 +3,95 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { motion } from "framer-motion";
 
 const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Form validation
+    // Validate inputs
     if (!formData.email || !formData.password) {
       toast.error("Email and password are required!");
       return;
     }
 
     try {
+      // Send login request
       const { data } = await axios.post("/api/login", formData);
-      toast.success("Login successful!");
-      localStorage.setItem("token", data.token); // Store the token
-      const decodedToken = JSON.parse(atob(data.token.split(".")[1])); // Decode token to get role
+
+      // Decode the token to get user details
+      const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
+
+      // Set login states
       setIsLoggedIn(true);
       setUsername(decodedToken.username);
       setIsAdmin(decodedToken.role === "admin");
-      navigate("/"); // Redirect to dashboard after successful login
+
+      // Store token in localStorage
+      localStorage.setItem("token", data.token);
+
+      // Show success toast and navigate
+      toast.success("Login successful!");
+      navigate("/");
     } catch (error) {
+      // Show error toast on failure
       toast.error(error.response?.data?.message || "Login failed");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md space-y-6">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <ToastContainer />
-      <h2 className="text-2xl font-bold text-center">Login</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-lg"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-lg"
-        />
-        <button
-          type="submit"
-          className="w-full p-2 bg-blue-500 text-white rounded-lg"
-        >
-          Login
-        </button>
-      </form>
+      <motion.div
+        initial={{ x: -200, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 flex space-x-10"
+      >
+        {/* Illustration Section */}
+        <div className="hidden lg:block w-1/3">
+          <img src="src/assets/authimg.png" alt="Login" className="rounded-lg" />
+        </div>
+
+        {/* Login Form Section */}
+        <div className="w-full lg:w-1/2 space-y-6">
+          <h2 className="text-4xl font-bold text-gray-800 text-center">Welcome Back</h2>
+          <p className="text-center text-gray-600">Log in to access your account</p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="submit"
+              className="w-full p-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700"
+            >
+              Login
+            </button>
+          </form>
+        </div>
+      </motion.div>
     </div>
   );
 };
