@@ -1,7 +1,6 @@
 import Inventory from "../models/Inventory.models.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
-import AuditLog from "../models/AuditLog.models.js";
 import Sale from "../models/Sale.models.js";
 
 const getInventory = async (req, res) => {
@@ -53,15 +52,6 @@ const addInventory = [
       });
 
       await newInventory.save();
-
-      // Log the action
-      const auditLog = new AuditLog({
-        action: "addInventory",
-        user: req.user.username, // Assuming req.user contains the authenticated user's info
-        details: newInventory,
-      });
-      await auditLog.save();
-
       res
         .status(201)
         .json({ message: "Inventory added successfully", newInventory });
@@ -107,14 +97,6 @@ const updateInventory = async (req, res) => {
       return res.status(404).json({ message: "Inventory item not found" });
     }
 
-    // Log the action
-    const auditLog = new AuditLog({
-      action: "updateInventory",
-      user: req.user.username, // Assuming req.user contains the authenticated user's info
-      details: updatedInventory,
-    });
-    await auditLog.save();
-
     res.status(200).json(updatedInventory);
   } catch (error) {
     res.status(400).json({ message: "Error updating inventory", error });
@@ -129,14 +111,6 @@ const deleteInventory = async (req, res) => {
     if (!deletedInventory) {
       return res.status(404).json({ message: "Inventory item not found" });
     }
-
-    // Log the action
-    const auditLog = new AuditLog({
-      action: "deleteInventory",
-      user: req.user.username, // Assuming req.user contains the authenticated user's info
-      details: deletedInventory,
-    });
-    await auditLog.save();
 
     res.status(200).json({ message: "Inventory deleted successfully" });
   } catch (error) {

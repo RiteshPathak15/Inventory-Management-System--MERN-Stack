@@ -1,39 +1,40 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-const InventoryChart = ({ inventoryLevels }) => {
+const InventoryChart = ({ inventory }) => {
   const data = {
-    labels: inventoryLevels.map(level => level.name),
+    labels: inventory.map((item) => item.name),
     datasets: [
       {
-        label: 'Inventory Levels',
-        data: inventoryLevels.map(level => level.quantity),
-        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        borderColor: 'rgba(153, 102, 255, 1)',
-        borderWidth: 1,
-      }
-    ]
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
+        label: "Quantity",
+        data: inventory.map((item) => item.quantity),
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
       },
-      title: {
-        display: true,
-        text: 'Current Inventory Levels',
-      },
-    },
+    ],
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <Bar data={data} options={options} />
+    <div className="bg-white shadow-md rounded-lg p-4">
+      <h2 className="text-xl font-bold mb-4">Inventory Chart</h2>
+      <Bar data={data} />
     </div>
   );
 };

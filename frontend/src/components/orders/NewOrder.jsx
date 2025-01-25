@@ -15,8 +15,6 @@ const NewOrder = ({ onOrderAdded }) => {
     notifyOnDelivery: false,
   });
   const [inventory, setInventory] = useState([]);
-  const [expiryDate, setExpiryDate] = useState(null);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,17 +52,20 @@ const NewOrder = ({ onOrderAdded }) => {
         buyingPrice: selectedProduct.buyingPrice,
         orderValue: selectedProduct.price * order.quantity,
       });
-      setExpiryDate(new Date(selectedProduct.expiryDate));
     }
+  };
+
+  const handleQuantityChange = (e) => {
+    const { value } = e.target;
+    setOrder((prev) => ({
+      ...prev,
+      quantity: value,
+      orderValue: prev.unit * value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const selectedDeliveryDate = new Date(order.deliveryDate);
-    if (expiryDate && selectedDeliveryDate > expiryDate) {
-      setError("Delivery date cannot be after the product's expiry date.");
-      return;
-    }
     try {
       const response = await axios.post("/api/orders", order, {
         headers: {
@@ -105,7 +106,7 @@ const NewOrder = ({ onOrderAdded }) => {
               type="number"
               name="quantity"
               value={order.quantity}
-              onChange={handleChange}
+              onChange={handleQuantityChange}
               placeholder="Enter product quantity"
               className="w-full border border-gray-300 rounded-lg px-4 py-2"
             />
@@ -133,7 +134,6 @@ const NewOrder = ({ onOrderAdded }) => {
             </label>
           </div>
         </div>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="flex justify-between">
           <button
             type="button"

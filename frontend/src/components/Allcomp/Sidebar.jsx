@@ -72,15 +72,7 @@ const Sidebar = () => {
               <span>Order</span>
             </Link>
           </li>
-          <li>
-            <Link
-              to="/sell"
-              className="flex items-center space-x-2 hover:text-blue-400"
-            >
-              <FaShoppingCart />
-              <span>Product Purchase</span>
-            </Link>
-          </li>
+        
           <li>
             <Link
               to="/profile"
@@ -88,15 +80,6 @@ const Sidebar = () => {
             >
               <FaUser />
               <span>Profile</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/auditlogs"
-              className="flex items-center space-x-2 hover:text-blue-400"
-            >
-              <FaUser />
-              <span>Audit Log</span>
             </Link>
           </li>
           <li>

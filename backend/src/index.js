@@ -4,12 +4,8 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/user.routes.js";
 import inventoryRoutes from "./routes/inventory.routes.js";
-import dashboardRoutes from "./routes/dashboard.routes.js";
-import productRoutes from "./routes/product.routes.js";
 import supplierRoutes from "./routes/supplier.routes.js";
 import orderRoutes from "./routes/order.routes.js";
-import reportRoutes from "./routes/report.routes.js";
-import sellRoutes from "./routes/sell.routes.js";
 
 dotenv.config();
 
@@ -28,12 +24,8 @@ connectDB();
 
 app.use("/api/users", userRoutes);
 app.use("/api/inventory", inventoryRoutes);
-app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/suppliers", supplierRoutes);
-app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
-app.use("/api/report", reportRoutes);
-app.use("/api/sell", sellRoutes);
 app.use("/api", userRoutes);
 
 

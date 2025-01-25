@@ -15,7 +15,6 @@ const addOrder = async (req, res) => {
     productName,
     productId,
     category,
-    orderValue,
     quantity,
     unit,
     buyingPrice,
@@ -28,6 +27,8 @@ const addOrder = async (req, res) => {
     if (!inventoryItem || inventoryItem.quantity < quantity) {
       return res.status(400).json({ message: "Insufficient inventory" });
     }
+
+    const orderValue = inventoryItem.price * quantity;
 
     const newOrder = new Order({
       productName,

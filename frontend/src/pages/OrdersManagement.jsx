@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import NewOrder from "../components/orders/NewOrder";
+import Pagination from "../components/orders/Pagination";
+import OrderModal from "../components/orders/OrderModal";
 import {
   TotalRevenueCard,
   TotalOrdersCard,
@@ -9,10 +13,6 @@ import {
   AverageQuantityPerOrderCard,
   MostCommonCategoryCard,
 } from "../components/orders/OrderSummaryCard";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Pagination from "../components/orders/Pagination";
-import OrderModal from "../components/orders/OrderModal";
 
 const OrdersManagement = () => {
   const [orders, setOrders] = useState([]);
@@ -84,12 +84,20 @@ const OrdersManagement = () => {
             <h2 className="text-xl font-bold mb-2">{order.productName}</h2>
             <p className="text-gray-700 mb-2">Product ID: {order.productId}</p>
             <p className="text-gray-700 mb-2">Category: {order.category}</p>
-            <p className="text-gray-700 mb-2">Order Value: ${order.orderValue}</p>
+            <p className="text-gray-700 mb-2">
+              Order Value: ${order.orderValue}
+            </p>
             <p className="text-gray-700 mb-2">Quantity: {order.quantity}</p>
             <p className="text-gray-700 mb-2">Unit: {order.unit}</p>
-            <p className="text-gray-700 mb-2">Buying Price: ${order.buyingPrice}</p>
-            <p className="text-gray-700 mb-2">Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}</p>
-            <p className="text-gray-700 mb-2">Notify On Delivery: {order.notifyOnDelivery ? "Yes" : "No"}</p>
+            <p className="text-gray-700 mb-2">
+              Buying Price: ${order.buyingPrice}
+            </p>
+            <p className="text-gray-700 mb-2">
+              Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}
+            </p>
+            <p className="text-gray-700 mb-2">
+              Notify On Delivery: {order.notifyOnDelivery ? "Yes" : "No"}
+            </p>
           </div>
         ))}
       </div>
@@ -100,7 +108,9 @@ const OrdersManagement = () => {
           onPageChange={setCurrentPage}
         />
       )}
-      {selectedOrder && <OrderModal order={selectedOrder} onClose={handleCloseModal} />}
+      {selectedOrder && (
+        <OrderModal order={selectedOrder} onClose={handleCloseModal} />
+      )}
       <ToastContainer />
     </div>
   );
