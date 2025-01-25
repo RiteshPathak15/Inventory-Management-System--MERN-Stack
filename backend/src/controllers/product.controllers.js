@@ -19,4 +19,38 @@ const addProduct = async (req, res) => {
     res.status(400).json({ message: "Error adding product", error });
   }
 };
-export{getProducts,addProduct}
+
+const updateProduct = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const updatedData = req.body;
+
+      const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, { new: true });
+
+      if (!updatedProduct) {
+          return res.status(404).json({ message: 'Product not found' });
+      }
+
+      res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
+  } catch (error) {
+      res.status(500).json({ message: 'Error updating product', error: error.message });
+  }
+};
+
+// Delete a product
+const deleteProduct = async (req, res) => {
+  try {
+      const { id } = req.params;
+
+      const deletedProduct = await Product.findByIdAndDelete(id);
+
+      if (!deletedProduct) {
+          return res.status(404).json({ message: 'Product not found' });
+      }
+
+      res.status(200).json({ message: 'Product deleted successfully' });
+  } catch (error) {
+      res.status(500).json({ message: 'Error deleting product', error: error.message });
+  }
+};
+export{getProducts,addProduct,updateProduct,deleteProduct}

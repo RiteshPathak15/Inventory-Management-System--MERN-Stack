@@ -36,9 +36,10 @@ app.use("/api/report", reportRoutes);
 app.use("/api/sell", sellRoutes);
 app.use("/api", userRoutes);
 
-// Resolve __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+
+// // Resolve __dirname
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 
 
 app.get("/", (req, res) => {
@@ -47,7 +48,7 @@ app.get("/", (req, res) => {
 
 
 // Serve React static files
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+// app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 // Fallback route for React SPA
 app.get("*", (req, res) => {

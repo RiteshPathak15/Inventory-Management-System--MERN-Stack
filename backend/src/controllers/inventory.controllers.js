@@ -1,6 +1,7 @@
 import Inventory from "../models/Inventory.models.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import AuditLog from "../models/AuditLog.models.js";
 import Sale from "../models/Sale.models.js";
 
 const getInventory = async (req, res) => {
@@ -52,6 +53,15 @@ const addInventory = [
       });
 
       await newInventory.save();
+
+      // Log the action
+      const auditLog = new AuditLog({
+        action: "addInventory",
+        user: req.user.username, // Assuming req.user contains the authenticated user's info
+        details: newInventory,
+      });
+      await auditLog.save();
+
       res
         .status(201)
         .json({ message: "Inventory added successfully", newInventory });
@@ -64,17 +74,48 @@ const addInventory = [
 
 const updateInventory = async (req, res) => {
   const { id } = req.params;
-  const { name, quantity, price, category, batch, supplier, image } = req.body;
+  const {
+    name,
+    productId,
+    category,
+    buyingPrice,
+    quantity,
+    unit,
+    expiryDate,
+    threshold,
+    price,
+  } = req.body;
 
   try {
     const updatedInventory = await Inventory.findByIdAndUpdate(
       id,
-      { name, quantity, price, category, batch, supplier, image },
+      {
+        name,
+        productId,
+        category,
+        buyingPrice,
+        quantity,
+        unit,
+        expiryDate,
+        threshold,
+        price,
+      },
       { new: true }
     );
-    res
-      .status(200)
-      .json({ message: "Inventory updated successfully", updatedInventory });
+
+    if (!updatedInventory) {
+      return res.status(404).json({ message: "Inventory item not found" });
+    }
+
+    // Log the action
+    const auditLog = new AuditLog({
+      action: "updateInventory",
+      user: req.user.username, // Assuming req.user contains the authenticated user's info
+      details: updatedInventory,
+    });
+    await auditLog.save();
+
+    res.status(200).json(updatedInventory);
   } catch (error) {
     res.status(400).json({ message: "Error updating inventory", error });
   }
@@ -83,7 +124,20 @@ const updateInventory = async (req, res) => {
 const deleteInventory = async (req, res) => {
   const { id } = req.params;
   try {
-    await Inventory.findByIdAndDelete(id);
+    const deletedInventory = await Inventory.findByIdAndDelete(id);
+
+    if (!deletedInventory) {
+      return res.status(404).json({ message: "Inventory item not found" });
+    }
+
+    // Log the action
+    const auditLog = new AuditLog({
+      action: "deleteInventory",
+      user: req.user.username, // Assuming req.user contains the authenticated user's info
+      details: deletedInventory,
+    });
+    await auditLog.save();
+
     res.status(200).json({ message: "Inventory deleted successfully" });
   } catch (error) {
     res.status(400).json({ message: "Error deleting inventory", error });
@@ -125,4 +179,10 @@ const getChartData = async (req, res) => {
   }
 };
 
-export{getInventory,addInventory,updateInventory,deleteInventory,getChartData}
+export {
+  getInventory,
+  addInventory,
+  updateInventory,
+  deleteInventory,
+  getChartData,
+};

@@ -92,6 +92,15 @@ const Sidebar = () => {
           </li>
           <li>
             <Link
+              to="/auditlogs"
+              className="flex items-center space-x-2 hover:text-blue-400"
+            >
+              <FaUser />
+              <span>Audit Log</span>
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/login"
               className="flex items-center space-x-2 hover:text-blue-400"
             > 

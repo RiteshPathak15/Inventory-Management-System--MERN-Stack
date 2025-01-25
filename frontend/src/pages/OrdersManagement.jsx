@@ -11,11 +11,16 @@ import {
 } from "../components/orders/OrderSummaryCard";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Pagination from "../components/orders/Pagination";
+import OrderModal from "../components/orders/OrderModal";
 
 const OrdersManagement = () => {
   const [orders, setOrders] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(10);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     fetchOrders();
@@ -23,96 +28,80 @@ const OrdersManagement = () => {
 
   const fetchOrders = async () => {
     try {
-      setLoading(true);
       const response = await axios.get("/api/orders");
       setOrders(response.data);
-    } catch (error) {
-      toast.error("Error fetching orders");
-      console.error("Error fetching orders:", error);
-    } finally {
       setLoading(false);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
     }
-  };
-
-  const handleAddOrderClick = () => {
-    setShowForm(!showForm);
   };
 
   const handleOrderAdded = (newOrder) => {
     setOrders((prevOrders) => [...prevOrders, newOrder]);
-    setShowForm(false); // Hide the form after adding the order
+    setShowForm(false);
     toast.success("Order added successfully!");
   };
 
+  const handleOrderClick = (order) => {
+    setSelectedOrder(order);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedOrder(null);
+  };
+
+  // Pagination logic
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
   return (
-    <div className="p-6 bg-white shadow rounded-lg">
-      <ToastContainer />
-      <h2 className="text-3xl font-bold mb-6">Orders Management</h2>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Orders Management</h1>
       <button
-        onClick={handleAddOrderClick}
-        className="bg-blue-500 text-white rounded-lg px-4 py-2 mb-4"
+        onClick={() => setShowForm(!showForm)}
+        className="mb-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
       >
         {showForm ? "Hide Form" : "Add Order"}
       </button>
       {showForm && <NewOrder onOrderAdded={handleOrderAdded} />}
-      <div className="mt-6">
-        <h3 className="text-2xl font-semibold mb-4">Order Summary</h3>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <TotalRevenueCard orders={orders} />
-          <TotalOrdersCard orders={orders} />
-          <AverageOrderValueCard orders={orders} />
-          <TotalQuantityCard orders={orders} />
-          <AverageQuantityPerOrderCard orders={orders} />
-          <MostCommonCategoryCard orders={orders} />
-        </div>
-        <h3 className="text-2xl font-semibold mb-4 mt-6">Orders List</h3>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <table className="w-full bg-gray-100 rounded-lg shadow-lg mt-6">
-            <thead className="bg-gray-200">
-              <tr className="text-gray-700">
-                <th className="px-6 py-4 font-medium text-left">
-                  Product Name
-                </th>
-                <th className="px-6 py-4 font-medium text-left">Product ID</th>
-                <th className="px-6 py-4 font-medium text-left">Category</th>
-                <th className="px-6 py-4 font-medium text-left">Order Value</th>
-                <th className="px-6 py-4 font-medium text-left">Quantity</th>
-                <th className="px-6 py-4 font-medium text-left">Unit</th>
-                <th className="px-6 py-4 font-medium text-left">
-                  Buying Price
-                </th>
-                <th className="px-6 py-4 font-medium text-left">
-                  Delivery Date
-                </th>
-                <th className="px-6 py-4 font-medium text-left">
-                  Notify on Delivery
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id} className="border-t hover:bg-gray-50">
-                  <td className="px-6 py-4">{order.productName}</td>
-                  <td className="px-6 py-4">{order.productId}</td>
-                  <td className="px-6 py-4">{order.category}</td>
-                  <td className="px-6 py-4">{order.orderValue}</td>
-                  <td className="px-6 py-4">{order.quantity}</td>
-                  <td className="px-6 py-4">{order.unit}</td>
-                  <td className="px-6 py-4">{order.buyingPrice}</td>
-                  <td className="px-6 py-4">
-                    {new Date(order.deliveryDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    {order.notifyOnDelivery ? "Yes" : "No"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+        <TotalRevenueCard orders={orders} />
+        <TotalOrdersCard orders={orders} />
+        <AverageOrderValueCard orders={orders} />
+        <TotalQuantityCard orders={orders} />
+        <AverageQuantityPerOrderCard orders={orders} />
+        <MostCommonCategoryCard orders={orders} />
       </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {currentOrders.map((order) => (
+          <div
+            key={order._id}
+            className="bg-white shadow-md rounded-lg p-4 cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-105"
+            onClick={() => handleOrderClick(order)}
+          >
+            <h2 className="text-xl font-bold mb-2">{order.productName}</h2>
+            <p className="text-gray-700 mb-2">Product ID: {order.productId}</p>
+            <p className="text-gray-700 mb-2">Category: {order.category}</p>
+            <p className="text-gray-700 mb-2">Order Value: ${order.orderValue}</p>
+            <p className="text-gray-700 mb-2">Quantity: {order.quantity}</p>
+            <p className="text-gray-700 mb-2">Unit: {order.unit}</p>
+            <p className="text-gray-700 mb-2">Buying Price: ${order.buyingPrice}</p>
+            <p className="text-gray-700 mb-2">Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}</p>
+            <p className="text-gray-700 mb-2">Notify On Delivery: {order.notifyOnDelivery ? "Yes" : "No"}</p>
+          </div>
+        ))}
+      </div>
+      {orders.length > ordersPerPage && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
+      {selectedOrder && <OrderModal order={selectedOrder} onClose={handleCloseModal} />}
+      <ToastContainer />
     </div>
   );
 };

@@ -18,18 +18,18 @@ const AddInventory = ({ fetchInventory }) => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "image") {
-      setInventory((prev) => ({ ...prev, [name]: files[0] }));
+      setInventory({ ...inventory, image: files[0] });
     } else {
-      setInventory((prev) => ({ ...prev, [name]: value }));
+      setInventory({ ...inventory, [name]: value });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    Object.keys(inventory).forEach((key) => {
+    for (const key in inventory) {
       formData.append(key, inventory[key]);
-    });
+    }
 
     try {
       await axios.post("/api/inventory", formData, {
@@ -38,141 +38,154 @@ const AddInventory = ({ fetchInventory }) => {
         },
       });
       fetchInventory();
+      setInventory({
+        image: null,
+        name: "",
+        productId: "",
+        category: "",
+        buyingPrice: "",
+        quantity: "",
+        unit: "",
+        expiryDate: "",
+        threshold: "",
+        price: "",
+      });
     } catch (error) {
       console.error("Error adding inventory:", error);
     }
   };
 
   return (
-    <div className="p-6 bg-white shadow rounded-lg">
-      <h2 className="text-3xl font-bold mb-6">New Inventory Item</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Inventory Image</label>
-            <input
-              type="file"
-              name="image"
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Inventory Name</label>
-            <input
-              type="text"
-              name="name"
-              value={inventory.name}
-              onChange={handleChange}
-              placeholder="Enter inventory name"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Product ID</label>
-            <input
-              type="text"
-              name="productId"
-              value={inventory.productId}
-              onChange={handleChange}
-              placeholder="Enter product ID"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Category</label>
-            <input
-              type="text"
-              name="category"
-              value={inventory.category}
-              onChange={handleChange}
-              placeholder="Select product category"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Buying Price</label>
-            <input
-              type="number"
-              name="buyingPrice"
-              value={inventory.buyingPrice}
-              onChange={handleChange}
-              placeholder="Enter buying price"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Quantity</label>
-            <input
-              type="number"
-              name="quantity"
-              value={inventory.quantity}
-              onChange={handleChange}
-              placeholder="Enter quantity"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Unit</label>
-            <input
-              type="text"
-              name="unit"
-              value={inventory.unit}
-              onChange={handleChange}
-              placeholder="Enter unit"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Expiry Date</label>
-            <input
-              type="date"
-              name="expiryDate"
-              value={inventory.expiryDate}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Threshold</label>
-            <input
-              type="number"
-              name="threshold"
-              value={inventory.threshold}
-              onChange={handleChange}
-              placeholder="Enter threshold"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Price</label>
-            <input
-              type="number"
-              name="price"
-              value={inventory.price}
-              onChange={handleChange}
-              placeholder="Enter price"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <button
-            type="button"
-            onClick={() => fetchInventory()}
-            className="bg-red-500 text-white rounded-lg px-4 py-2"
-          >
-            Discard
-          </button>
-          <button
-            type="submit"
-            className="bg-green-500 text-white rounded-lg px-4 py-2"
-          >
-            Add Inventory
-          </button>
-        </div>
-      </form>
-    </div>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-lg mx-auto p-4 bg-white shadow-md rounded"
+    >
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Image
+        </label>
+        <input
+          type="file"
+          name="image"
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Name
+        </label>
+        <input
+          type="text"
+          name="name"
+          value={inventory.name}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Product ID
+        </label>
+        <input
+          type="text"
+          name="productId"
+          value={inventory.productId}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Category
+        </label>
+        <input
+          type="text"
+          name="category"
+          value={inventory.category}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Buying Price
+        </label>
+        <input
+          type="number"
+          name="buyingPrice"
+          value={inventory.buyingPrice}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Quantity
+        </label>
+        <input
+          type="number"
+          name="quantity"
+          value={inventory.quantity}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Unit
+        </label>
+        <input
+          type="text"
+          name="unit"
+          value={inventory.unit}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Expiry Date
+        </label>
+        <input
+          type="date"
+          name="expiryDate"
+          value={inventory.expiryDate}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Threshold
+        </label>
+        <input
+          type="number"
+          name="threshold"
+          value={inventory.threshold}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          Price
+        </label>
+        <input
+          type="number"
+          name="price"
+          value={inventory.price}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border rounded"
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
+      >
+        Add Inventory
+      </button>
+    </form>
   );
 };
 

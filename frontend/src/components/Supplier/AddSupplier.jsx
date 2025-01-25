@@ -29,7 +29,6 @@ const AddSupplier = ({ fetchSuppliers, onSupplierAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Form validation
     if (
       !supplier.name ||
       !supplier.product ||

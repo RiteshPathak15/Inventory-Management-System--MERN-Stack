@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SellProduct = ({ userId }) => {
-  const [formData, setFormData] = useState({ name: '', description: '', price: '', category: '', image: null });
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category: "",
+    stock: "",
+    image: null,
+  });
   const [imagePreview, setImagePreview] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'image') {
+    if (name === "image") {
       setFormData({ ...formData, image: files[0] });
       setImagePreview(URL.createObjectURL(files[0]));
     } else {
@@ -21,8 +28,15 @@ const SellProduct = ({ userId }) => {
     e.preventDefault();
 
     // Form validation
-    if (!formData.name || !formData.description || !formData.price || !formData.category || !formData.image) {
-      toast.error('Please fill all fields and select an image');
+    if (
+      !formData.name ||
+      !formData.description ||
+      !formData.price ||
+      !formData.category ||
+      !formData.stock ||
+      !formData.image
+    ) {
+      toast.error("Please fill all fields and select an image");
       return;
     }
 
@@ -30,17 +44,29 @@ const SellProduct = ({ userId }) => {
     Object.keys(formData).forEach((key) => {
       productData.append(key, formData[key]);
     });
-    productData.append('sellerId', userId);
+    productData.append("sellerId", userId);
 
     try {
-      await axios.post('/api/products', productData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      const response = await axios.post("/api/products", productData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success('Product listed successfully');
-      setFormData({ name: '', description: '', price: '', category: '', image: null });
-      setImagePreview(null);
+
+      if (response.data?.success) {
+        toast.success("Product listed successfully");
+        setFormData({
+          name: "",
+          description: "",
+          price: "",
+          category: "",
+          stock: "",
+          image: null,
+        });
+        setImagePreview(null);
+      } else {
+        toast.error(response.data?.message || "Error listing product");
+      }
     } catch (error) {
-      toast.error('Error listing product');
+      toast.error("Error listing product");
     }
   };
 
@@ -50,7 +76,9 @@ const SellProduct = ({ userId }) => {
       <h2 className="text-2xl font-bold text-center">Sell Product</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Product Name</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Product Name
+          </label>
           <input
             type="text"
             name="name"
@@ -60,7 +88,9 @@ const SellProduct = ({ userId }) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
           <textarea
             name="description"
             value={formData.description}
@@ -69,7 +99,9 @@ const SellProduct = ({ userId }) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Price</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Price
+          </label>
           <input
             type="number"
             name="price"
@@ -79,7 +111,9 @@ const SellProduct = ({ userId }) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Category</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Category
+          </label>
           <select
             name="category"
             value={formData.category}
@@ -94,16 +128,39 @@ const SellProduct = ({ userId }) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Product Image</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Stock Quantity
+          </label>
+          <input
+            type="number"
+            name="stock"
+            value={formData.stock}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-lg"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Product Image
+          </label>
           <input
             type="file"
             name="image"
             onChange={handleChange}
             className="w-full p-2 border rounded-lg"
           />
-          {imagePreview && <img src={imagePreview} alt="Preview" className="mt-2 w-24 h-24 object-cover rounded-lg" />}
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="mt-2 w-24 h-24 object-cover rounded-lg"
+            />
+          )}
         </div>
-        <button type="submit" className="bg-green-500 text-white rounded-lg px-4 py-2">
+        <button
+          type="submit"
+          className="bg-green-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+        >
           List Product
         </button>
       </form>

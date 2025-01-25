@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import PrivateRoute from "./components/Allcomp/PrivateRoute";
 import SellProduct from "./pages/SellProduct";
+import AuditLogs from "./pages/AuditLogs";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,6 +75,14 @@ function App() {
               element={
                 <PrivateRoute isLoggedIn={isLoggedIn}>
                   <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/auditlogs"
+              element={
+                <PrivateRoute isLoggedIn={isLoggedIn}>
+                  <AuditLogs/>
                 </PrivateRoute>
               }
             />

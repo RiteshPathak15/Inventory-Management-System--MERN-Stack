@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import { User } from "../models/User.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import AuditLog from "../models/AuditLog.models.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -33,13 +34,21 @@ const registerUser = async (req, res) => {
       avatar: avatarUrl,
     });
     await newUser.save();
+
+    // Log the action
+    const auditLog = new AuditLog({
+      action: 'registerUser',
+      user: username,
+      details: newUser,
+    });
+    await auditLog.save();
+
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error with registration:", error);
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
-
 
 // Login User
 const loginUser = async (req, res) => {
@@ -177,6 +186,15 @@ const updateUserAvatar = async (req, res) => {
       { avatar: avatarUrl },
       { new: true }
     ).select("-password -refreshToken");
+
+    // Log the action
+    const auditLog = new AuditLog({
+      action: 'updateUserAvatar',
+      user: req.user.username,
+      details: user,
+    });
+    await auditLog.save();
+
     res.json({ message: "Avatar updated successfully", user });
   } catch (error) {
     console.error("Error updating avatar:", error);
@@ -199,7 +217,7 @@ const getAllEmployees = async (req, res) => {
     res.status(500).json({ message: "Error fetching employees" });
   }
 };
-    
+
 // Update User Profile
 const updateUserProfile = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -214,6 +232,15 @@ const updateUserProfile = async (req, res) => {
     }
 
     const user = await User.findByIdAndUpdate(userId, updatedData, { new: true }).select("-password -refreshToken");
+
+    // Log the action
+    const auditLog = new AuditLog({
+      action: 'updateUserProfile',
+      user: req.user.username,
+      details: user,
+    });
+    await auditLog.save();
+
     res.json({ message: "Profile updated successfully", user });
   } catch (error) {
     console.error("Error updating profile:", error);
