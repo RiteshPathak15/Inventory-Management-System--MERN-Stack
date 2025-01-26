@@ -153,10 +153,19 @@ const getChartData = async (req, res) => {
   }
 };
 
+const getLowStockItems = async (req, res) => {
+  try {
+    const lowStockItems = await Inventory.find({ quantity: { $lt: 10 } });
+    res.status(200).json(lowStockItems);
+  } catch (error) {
+    res.status(400).json({ message: "Error fetching low stock items", error });
+  }
+};
 export {
   getInventory,
   addInventory,
   updateInventory,
   deleteInventory,
   getChartData,
+  getLowStockItems,
 };
