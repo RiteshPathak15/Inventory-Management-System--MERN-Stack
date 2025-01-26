@@ -28,6 +28,7 @@ const SupplierManagement = () => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching suppliers:", error);
+      toast.error("Error fetching suppliers");
       setLoading(false);
     }
   };
@@ -112,9 +113,7 @@ const SupplierManagement = () => {
               {/* Supplier Details Section */}
               <div className="p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute inset-0 bg-gray-900 bg-opacity-75 flex flex-col justify-center items-center text-white z-10">
                 <h2 className="text-xl font-semibold">{supplier.name}</h2>
-                <p className="text-sm">{supplier.product}</p>
                 <p className="text-sm">{supplier.category}</p>
-                <p className="text-sm">${supplier.buyingPrice}</p>
                 <p className="text-sm flex items-center">
                   <MdPhone className="mr-2" /> {supplier.contactNumber}
                 </p>

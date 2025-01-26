@@ -1,39 +1,39 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const SupplierSchema = new mongoose.Schema({
   image: {
     type: String,
-    required: false
+    required: false,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   product: {
     type: String,
-    required: true
+    default: null,
   },
   category: {
     type: String,
-    required: true
+    required: true,
   },
   buyingPrice: {
     type: Number,
-    required: true
+    default: null,
   },
   contactNumber: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   takesReturns: {
     type: Boolean,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const Supplier = mongoose.model('Supplier', SupplierSchema);
+const Supplier = mongoose.model("Supplier", SupplierSchema);
 export default Supplier;

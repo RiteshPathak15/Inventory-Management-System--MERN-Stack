@@ -3,13 +3,11 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const AddSupplier = ({ fetchSuppliers, onSupplierAdded }) => {
+const AddSupplier = ({ fetchSuppliers }) => {
   const [supplier, setSupplier] = useState({
     image: null,
     name: "",
-    product: "",
     category: "",
-    buyingPrice: "",
     contactNumber: "",
     takesReturns: false,
     email: "",
@@ -31,9 +29,7 @@ const AddSupplier = ({ fetchSuppliers, onSupplierAdded }) => {
 
     if (
       !supplier.name ||
-      !supplier.product ||
       !supplier.category ||
-      !supplier.buyingPrice ||
       !supplier.contactNumber ||
       !supplier.email
     ) {
@@ -47,11 +43,11 @@ const AddSupplier = ({ fetchSuppliers, onSupplierAdded }) => {
     });
 
     try {
-      const { data } = await axios.post("/api/suppliers", formData, {
+      await axios.post("/api/suppliers", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Supplier added successfully!");
-      onSupplierAdded(data.newSupplier);
+      fetchSuppliers(); // Fetch the updated list of suppliers
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
@@ -87,17 +83,6 @@ const AddSupplier = ({ fetchSuppliers, onSupplierAdded }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Product</label>
-            <input
-              type="text"
-              name="product"
-              value={supplier.product}
-              onChange={handleChange}
-              placeholder="Enter product"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
             <label className="block text-gray-700 mb-2">Category</label>
             <input
               type="text"
@@ -105,17 +90,6 @@ const AddSupplier = ({ fetchSuppliers, onSupplierAdded }) => {
               value={supplier.category}
               onChange={handleChange}
               placeholder="Select product category"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Buying Price</label>
-            <input
-              type="number"
-              name="buyingPrice"
-              value={supplier.buyingPrice}
-              onChange={handleChange}
-              placeholder="Enter buying price"
               className="w-full border border-gray-300 rounded-lg px-4 py-2"
             />
           </div>
@@ -161,9 +135,7 @@ const AddSupplier = ({ fetchSuppliers, onSupplierAdded }) => {
               setSupplier({
                 image: null,
                 name: "",
-                product: "",
                 category: "",
-                buyingPrice: "",
                 contactNumber: "",
                 takesReturns: false,
                 email: "",
