@@ -6,6 +6,7 @@ import userRoutes from "./routes/user.routes.js";
 import inventoryRoutes from "./routes/inventory.routes.js";
 import supplierRoutes from "./routes/supplier.routes.js";
 import orderRoutes from "./routes/order.routes.js";
+import logRoutes from "./routes/log.routes.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/api/inventory", inventoryRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api", userRoutes);
+app.use("/api/logs", logRoutes)
 
 
 // // Resolve __dirname
