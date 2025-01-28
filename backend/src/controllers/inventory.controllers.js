@@ -1,5 +1,4 @@
 import Inventory from "../models/Inventory.models.js";
-import Log from "../models/Log.models.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import Sale from "../models/Sale.models.js";
@@ -53,16 +52,6 @@ const addInventory = [
       });
 
       await newInventory.save();
-
-      // Log the action
-      const log = new Log({
-        action: "add",
-        entity: "inventory",
-        entityId: newInventory._id,
-        userId: req.user._id,
-      });
-      await log.save();
-
       res
         .status(201)
         .json({ message: "Inventory added successfully", newInventory });
@@ -108,15 +97,6 @@ const updateInventory = async (req, res) => {
       return res.status(404).json({ message: "Inventory item not found" });
     }
 
-    // Log the action
-    const log = new Log({
-      action: "update",
-      entity: "inventory",
-      entityId: updatedInventory._id,
-      userId: req.user._id,
-    });
-    await log.save();
-
     res.status(200).json(updatedInventory);
   } catch (error) {
     res.status(400).json({ message: "Error updating inventory", error });
@@ -131,15 +111,6 @@ const deleteInventory = async (req, res) => {
     if (!deletedInventory) {
       return res.status(404).json({ message: "Inventory item not found" });
     }
-
-    // Log the action
-    const log = new Log({
-      action: "delete",
-      entity: "inventory",
-      entityId: deletedInventory._id,
-      userId: req.user._id,
-    });
-    await log.save();
 
     res.status(200).json({ message: "Inventory deleted successfully" });
   } catch (error) {

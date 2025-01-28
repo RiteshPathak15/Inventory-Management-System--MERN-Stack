@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import { User } from "../models/User.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
-import Log from "../models/Log.models.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -36,15 +35,6 @@ const registerUser = async (req, res) => {
       avatar: avatarUrl,
     });
     await newUser.save();
-
-    // Log the action
-    const log = new Log({
-      action: "add",
-      entity: "user",
-      entityId: newUser._id,
-      userId: req.user._id,
-    });
-    await log.save();
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
@@ -190,15 +180,6 @@ const updateUserAvatar = async (req, res) => {
       { new: true }
     ).select("-password -refreshToken");
 
-    // Log the action
-    const log = new Log({
-      action: "update",
-      entity: "user",
-      entityId: user._id,
-      userId: req.user._id,
-    });
-    await log.save();
-
     res.json({ message: "Avatar updated successfully", user });
   } catch (error) {
     console.error("Error updating avatar:", error);
@@ -238,15 +219,6 @@ const updateUserProfile = async (req, res) => {
     const user = await User.findByIdAndUpdate(userId, updatedData, {
       new: true,
     }).select("-password -refreshToken");
-
-    // Log the action
-    const log = new Log({
-      action: "update",
-      entity: "user",
-      entityId: user._id,
-      userId: req.user._id,
-    });
-    await log.save();
 
     res.json({ message: "Profile updated successfully", user });
   } catch (error) {
