@@ -3,6 +3,8 @@ import axios from "axios";
 import AddInventory from "../components/inventory/AddInventory";
 import InventoryTable from "../components/inventory/InventoryTable";
 import { FaPlus } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const InventoryManagement = () => {
   const [inventory, setInventory] = useState([]);
@@ -18,17 +20,32 @@ const InventoryManagement = () => {
       setInventory(response.data);
     } catch (error) {
       console.error("Error fetching inventory:", error);
+      toast.error("Error fetching inventory");
+    }
+  };
+
+  const handleToast = (message, type) => {
+    if (type === "success") {
+      toast.success(message);
+    } else {
+      toast.error(message);
     }
   };
 
   const totalItems = inventory.length;
   const totalQuantity = inventory.reduce((acc, item) => acc + item.quantity, 0);
-  const totalValue = inventory.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const totalValue = inventory.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
 
   return (
     <div className="container mx-auto p-4">
+      <ToastContainer />
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-bold text-gray-800">Inventory Management</h1>
+        <h1 className="text-4xl font-bold text-gray-800">
+          Inventory Management
+        </h1>
         <button
           onClick={() => setShowForm(!showForm)}
           className="bg-blue-500 text-white py-2 px-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 flex items-center"
@@ -39,7 +56,10 @@ const InventoryManagement = () => {
       </div>
       {showForm && (
         <div className="mb-6">
-          <AddInventory fetchInventory={fetchInventory} />
+          <AddInventory
+            fetchInventory={fetchInventory}
+            handleToast={handleToast}
+          />
         </div>
       )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -53,7 +73,9 @@ const InventoryManagement = () => {
         </div>
         <div className="bg-white shadow-lg rounded-lg p-6">
           <h2 className="text-2xl font-bold text-gray-800">Total Value</h2>
-          <p className="text-4xl font-bold text-red-500">${totalValue.toFixed(2)}</p>
+          <p className="text-4xl font-bold text-red-500">
+            ${totalValue.toFixed(2)}
+          </p>
         </div>
       </div>
       <InventoryTable inventory={inventory} fetchInventory={fetchInventory} />

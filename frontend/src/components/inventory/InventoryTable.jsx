@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
 
@@ -49,7 +49,6 @@ const InventoryTable = ({ inventory, fetchInventory }) => {
 
   return (
     <div className="overflow-x-auto">
-      <ToastContainer />
       <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">

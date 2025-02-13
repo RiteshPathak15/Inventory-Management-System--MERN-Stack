@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaSave, FaTimes } from "react-icons/fa";
 
@@ -16,7 +16,23 @@ const AddInventory = ({ fetchInventory }) => {
     expiryDate: "",
     threshold: "",
     price: "",
+    supplier: "", // Add supplier field
   });
+  const [suppliers, setSuppliers] = useState([]);
+
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const response = await axios.get("/api/suppliers");
+        setSuppliers(response.data);
+      } catch (error) {
+        console.error("Error fetching suppliers:", error);
+        toast.error("Error fetching suppliers");
+      }
+    };
+
+    fetchSuppliers();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -52,6 +68,7 @@ const AddInventory = ({ fetchInventory }) => {
         expiryDate: "",
         threshold: "",
         price: "",
+        supplier: "", // Reset supplier field
       });
       toast.success("Inventory added successfully!");
     } catch (error) {
@@ -62,8 +79,9 @@ const AddInventory = ({ fetchInventory }) => {
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-lg transition duration-300 ease-in-out transform">
-      <ToastContainer />
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Add New Inventory</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        Add New Inventory
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="mb-4">
@@ -165,22 +183,41 @@ const AddInventory = ({ fetchInventory }) => {
               className="w-full px-3 py-2 border rounded-lg"
             />
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Supplier</label>
+            <select
+              name="supplier"
+              value={inventory.supplier}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            >
+              <option value="">Select a supplier</option>
+              {suppliers.map((supplier) => (
+                <option key={supplier._id} value={supplier.name}>
+                  {supplier.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="flex justify-end space-x-4">
           <button
             type="button"
-            onClick={() => setInventory({
-              image: null,
-              name: "",
-              productId: "",
-              category: "",
-              buyingPrice: "",
-              quantity: "",
-              unit: "",
-              expiryDate: "",
-              threshold: "",
-              price: "",
-            })}
+            onClick={() =>
+              setInventory({
+                image: null,
+                name: "",
+                productId: "",
+                category: "",
+                buyingPrice: "",
+                quantity: "",
+                unit: "",
+                expiryDate: "",
+                threshold: "",
+                price: "",
+                supplier: "", // Reset supplier field
+              })
+            }
             className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105 flex items-center"
           >
             <FaTimes className="mr-2" />
