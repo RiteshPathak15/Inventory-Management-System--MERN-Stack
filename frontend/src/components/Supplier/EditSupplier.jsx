@@ -6,9 +6,7 @@ const EditSupplier = ({ supplier, onSupplierEdited, onClose }) => {
     _id: "",
     image: null,
     name: "",
-    product: null,
     category: "",
-    buyingPrice: null,
     contactNumber: "",
     email: "",
     takesReturns: false,
@@ -81,7 +79,6 @@ const EditSupplier = ({ supplier, onSupplierEdited, onClose }) => {
           className="w-full px-3 py-2 border rounded"
         />
       </div>
-    
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
           Category
@@ -94,7 +91,6 @@ const EditSupplier = ({ supplier, onSupplierEdited, onClose }) => {
           className="w-full px-3 py-2 border rounded"
         />
       </div>
-    
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
           Contact Number

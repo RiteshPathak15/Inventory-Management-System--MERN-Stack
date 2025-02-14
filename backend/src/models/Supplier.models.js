@@ -9,17 +9,9 @@ const SupplierSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  product: {
-    type: String,
-    default: null,
-  },
   category: {
     type: String,
     required: true,
-  },
-  buyingPrice: {
-    type: Number,
-    default: null,
   },
   contactNumber: {
     type: String,

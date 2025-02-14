@@ -15,9 +15,7 @@ const createSupplier = async (req, res) => {
   try {
     const {
       name,
-      product,
       category,
-      buyingPrice,
       contactNumber,
       email,
       takesReturns,
@@ -33,9 +31,7 @@ const createSupplier = async (req, res) => {
     const newSupplier = new Supplier({
       image: imageUrl,
       name,
-      product: null,
       category,
-      buyingPrice: null,
       contactNumber,
       email,
       takesReturns,
@@ -59,9 +55,7 @@ const updateSupplier = async (req, res) => {
     const supplierId = req.params.id;
     const {
       name,
-      product,
       category,
-      buyingPrice,
       contactNumber,
       email,
       takesReturns,
@@ -79,9 +73,7 @@ const updateSupplier = async (req, res) => {
       {
         image: imageUrl || req.body.image,
         name,
-        product,
         category,
-        buyingPrice,
         contactNumber,
         email,
         takesReturns,
