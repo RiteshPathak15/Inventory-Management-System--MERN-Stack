@@ -6,9 +6,9 @@ const EditSupplier = ({ supplier, onSupplierEdited, onClose }) => {
     _id: "",
     image: null,
     name: "",
-    product: "",
+    product: null,
     category: "",
-    buyingPrice: "",
+    buyingPrice: null,
     contactNumber: "",
     email: "",
     takesReturns: false,
@@ -81,18 +81,7 @@ const EditSupplier = ({ supplier, onSupplierEdited, onClose }) => {
           className="w-full px-3 py-2 border rounded"
         />
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Product
-        </label>
-        <input
-          type="text"
-          name="product"
-          value={supplierData.product}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded"
-        />
-      </div>
+    
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
           Category
@@ -105,18 +94,7 @@ const EditSupplier = ({ supplier, onSupplierEdited, onClose }) => {
           className="w-full px-3 py-2 border rounded"
         />
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Buying Price
-        </label>
-        <input
-          type="number"
-          name="buyingPrice"
-          value={supplierData.buyingPrice}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded"
-        />
-      </div>
+    
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
           Contact Number
