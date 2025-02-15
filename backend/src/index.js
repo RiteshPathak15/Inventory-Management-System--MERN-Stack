@@ -28,19 +28,9 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api", userRoutes);
 
-
-// // Resolve __dirname
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
-
-
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
-
-
-// Serve React static files
-// app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 // Fallback route for React SPA
 app.get("*", (req, res) => {
