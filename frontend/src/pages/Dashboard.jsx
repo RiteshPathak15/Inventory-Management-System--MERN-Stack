@@ -56,7 +56,9 @@ const Dashboard = () => {
 
   const fetchLowStockItems = async () => {
     try {
-      const response = await axios.get("/api/inventory/low-stock");
+      const response = await axios.get("/api/inventory/low-stock",{
+        headers:"Authorization: Bearer "+localStorage.getItem("token")
+      });
       setLowStockItems(response.data);
     } catch (error) {
       console.error("Error fetching low stock items:", error);

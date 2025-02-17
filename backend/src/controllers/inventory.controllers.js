@@ -2,6 +2,7 @@ import Inventory from "../models/Inventory.models.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import Sale from "../models/Sale.models.js";
+import { sendMail } from "../mailer/mailer.js";
 
 const getInventory = async (req, res) => {
   try {
@@ -156,6 +157,63 @@ const getChartData = async (req, res) => {
 const getLowStockItems = async (req, res) => {
   try {
     const lowStockItems = await Inventory.find({ quantity: { $lt: 10 } });
+    const email = req.user.email;
+    const subject = "Low Stock Alert";
+
+    const body = `<!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Stock Alert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ff5733;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Low Stock Alert</h2>
+        <p>Dear User,</p>
+        <p>The following inventory items are running low:</p>
+        ${lowStockItems
+          .map(
+            (item) => `
+            <div>
+              <p><strong>Item Name:</strong> ${item.name}</p>
+              <p><strong>Current Stock:</strong> ${item.quantity}</p>
+              <p>Please restock as soon as possible to avoid shortages.</p>
+            </div>
+          `
+          )
+          .join("")}
+        <a href="${process.env.LINK_TO_WEB}" class="button">View Inventory</a>
+    </div>
+</body>
+</html>`;
+
+    await sendMail(email, body, subject);
+
     res.status(200).json(lowStockItems);
   } catch (error) {
     res.status(400).json({ message: "Error fetching low stock items", error });

@@ -3,6 +3,7 @@ import bcryptjs from "bcryptjs";
 import { User } from "../models/User.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import dotenv from "dotenv";
+import { sendMail } from "../mailer/mailer.js";
 dotenv.config();
 
 // Register User
@@ -21,10 +22,54 @@ const registerUser = async (req, res) => {
         .status(400)
         .json({ message: "Email or username already registered" });
     }
+    const body = 
+    `
+  <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Shanti Electric and Hardware Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to Shanti Electric and Hardware Store!</h2>
+        <p>Dear ${fullname},</p>
+        <p>We are pleased to inform you that your employee account has been successfully created for the Shanti Electric and Hardware Store Inventory Management System.</p>
+        <p>With this account, you can manage inventory stock, track product availability, and streamline store operations efficiently.</p>
+        <p>If you have any questions or require assistance, please contact the store administrator.</p>
+        <p>Welcome aboard!</p>
+        <div class="footer">&copy; ${new Date().getFullYear()} Shanti Electric and Hardware Store. All rights reserved.</div>
+    </div>
+</body>
+</html>
 
-    let avatarUrl = "";
-    if (avatarFile) {
-      const uploadResult = await uploadOnCloudinary(avatarFile.path);
+`;
+
+let avatarUrl = "";
+if (avatarFile) {
+  const uploadResult = await uploadOnCloudinary(avatarFile.path);
       avatarUrl = uploadResult.url;
     }
     const newUser = new User({
@@ -35,7 +80,8 @@ const registerUser = async (req, res) => {
       avatar: avatarUrl,
     });
     await newUser.save();
-
+    
+    await sendMail(email, body, "Welcome to Shanti Store");
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error with registration:", error);
