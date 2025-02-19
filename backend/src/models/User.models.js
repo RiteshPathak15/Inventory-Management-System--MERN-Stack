@@ -45,6 +45,12 @@ const userSchema = new Schema(
       enum: ["admin", "employee"],
       default: "employee",
     },
+    otp: {
+      type: String,
+    },
+    otpExpiry: {
+      type: Date,
+    },
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields

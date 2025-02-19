@@ -4,7 +4,10 @@ import { User } from "../models/User.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import dotenv from "dotenv";
 import { sendMail } from "../mailer/mailer.js";
+import crypto from "crypto";
+
 dotenv.config();
+
 
 // Register User
 const registerUser = async (req, res) => {
@@ -22,54 +25,58 @@ const registerUser = async (req, res) => {
         .status(400)
         .json({ message: "Email or username already registered" });
     }
-    const body = 
-    `
-  <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Shanti Electric and Hardware Store</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            max-width: 500px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: auto;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Welcome to Shanti Electric and Hardware Store!</h2>
-        <p>Dear ${fullname},</p>
-        <p>We are pleased to inform you that your employee account has been successfully created for the Shanti Electric and Hardware Store Inventory Management System.</p>
-        <p>With this account, you can manage inventory stock, track product availability, and streamline store operations efficiently.</p>
-        <p>If you have any questions or require assistance, please contact the store administrator.</p>
-        <p>Welcome aboard!</p>
-        <div class="footer">&copy; ${new Date().getFullYear()} Shanti Electric and Hardware Store. All rights reserved.</div>
-    </div>
-</body>
-</html>
 
-`;
+    // Generate OTP
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const otpExpiry = Date.now() + 30 * 60 * 1000; // 30 minutes from now
 
-let avatarUrl = "";
-if (avatarFile) {
-  const uploadResult = await uploadOnCloudinary(avatarFile.path);
+    const body = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Welcome to Shanti Electric and Hardware Store</title>
+          <style>
+              body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f4;
+                  padding: 20px;
+                  text-align: center;
+              }
+              .container {
+                  max-width: 500px;
+                  background: #fff;
+                  padding: 20px;
+                  border-radius: 8px;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  margin: auto;
+              }
+              .footer {
+                  margin-top: 20px;
+                  font-size: 12px;
+                  color: #777;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <h2>Welcome to Shanti Electric and Hardware Store!</h2>
+              <p>Dear ${fullname},</p>
+              <p>We are pleased to inform you that your employee account has been successfully created for the Shanti Electric and Hardware Store Inventory Management System.</p>
+              <p>Your OTP for account verification is: <strong>${otp}</strong></p>
+              <p>Please use this OTP to verify your account. The OTP is valid for 30 minutes.</p>
+              <p>If you have any questions or require assistance, please contact the store administrator.</p>
+              <p>Welcome aboard!</p>
+              <div class="footer">&copy; ${new Date().getFullYear()} Shanti Electric and Hardware Store. All rights reserved.</div>
+          </div>
+      </body>
+      </html>
+    `;
+
+    let avatarUrl = "";
+    if (avatarFile) {
+      const uploadResult = await uploadOnCloudinary(avatarFile.path);
       avatarUrl = uploadResult.url;
     }
     const newUser = new User({
@@ -78,13 +85,42 @@ if (avatarFile) {
       email,
       password,
       avatar: avatarUrl,
+      otp, // Save OTP
+      otpExpiry, // Save OTP expiry time
     });
     await newUser.save();
     
     await sendMail(email, body, "Welcome to Shanti Store");
-    res.status(201).json({ message: "User registered successfully" });
+    res.status(201).json({ message: "User registered successfully. Please check your email for the OTP." });
   } catch (error) {
     console.error("Error with registration:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};
+
+const verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    console.log("Received email:", email);
+    console.log("Received OTP:", otp);
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.otp !== otp || user.otpExpiry < Date.now()) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    // Clear OTP fields after successful verification
+    user.otp = null;
+    user.otpExpiry = null;
+    await user.save();
+
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
@@ -282,4 +318,5 @@ export {
   updateUserAvatar,
   getAllEmployees,
   updateUserProfile,
+  verifyOtp,
 };
