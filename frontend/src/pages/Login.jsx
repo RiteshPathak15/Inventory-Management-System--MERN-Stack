@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import logining from "../assets/authimg.png";
 
+
 const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
