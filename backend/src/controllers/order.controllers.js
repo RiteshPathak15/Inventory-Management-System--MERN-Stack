@@ -1,5 +1,6 @@
 import Order from "../models/Order.models.js";
 import Inventory from "../models/Inventory.models.js";
+import { sendMail } from "../mailer/mailer.js"; // Import sendMail function
 
 const getOrders = async (req, res) => {
   try {
@@ -46,6 +47,23 @@ const addOrder = async (req, res) => {
 
     inventoryItem.quantity -= quantity;
     await inventoryItem.save();
+
+    // Send email notification to admin
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const subject = "New Order Added";
+    const body = `
+      <h2>New Order Added</h2>
+      <p>Product Name: ${productName}</p>
+      <p>Product ID: ${productId}</p>
+      <p>Category: ${category}</p>
+      <p>Order Value: $${orderValue}</p>
+      <p>Quantity: ${quantity}</p>
+      <p>Unit: ${unit}</p>
+      <p>Buying Price: $${buyingPrice}</p>
+      <p>Delivery Date: ${new Date(deliveryDate).toLocaleDateString()}</p>
+      <p>Notify on Delivery: ${notifyOnDelivery ? "Yes" : "No"}</p>
+    `;
+    await sendMail(adminEmail, body, subject);
 
     res.status(201).json({ message: "Order added successfully", newOrder });
   } catch (error) {
