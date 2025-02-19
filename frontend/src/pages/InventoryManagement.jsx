@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 const InventoryManagement = () => {
   const [inventory, setInventory] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchInventory();
@@ -39,6 +40,10 @@ const InventoryManagement = () => {
     0
   );
 
+  const filteredInventory = inventory.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="container mx-auto p-4">
       <ToastContainer />
@@ -62,6 +67,15 @@ const InventoryManagement = () => {
           />
         </div>
       )}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search Inventory..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="p-2 border rounded-md w-full"
+        />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-white shadow-lg rounded-lg p-6">
           <h2 className="text-2xl font-bold text-gray-800">Total Items</h2>
@@ -78,7 +92,7 @@ const InventoryManagement = () => {
           </p>
         </div>
       </div>
-      <InventoryTable inventory={inventory} fetchInventory={fetchInventory} />
+      <InventoryTable inventory={filteredInventory} fetchInventory={fetchInventory} />
     </div>
   );
 };
