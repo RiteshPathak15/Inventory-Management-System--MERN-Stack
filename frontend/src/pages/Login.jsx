@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
+import logining from "../assets/authimg.png";
 
 const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -59,7 +60,7 @@ const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
       >
         {/* Illustration Section */}
         <div className="hidden lg:block w-1/3">
-          <img src="src/assets/authimg.png" alt="Login" className="rounded-lg" />
+          <img src={logining} alt="Login" className="rounded-lg" />
         </div>
 
         {/* Login Form Section */}

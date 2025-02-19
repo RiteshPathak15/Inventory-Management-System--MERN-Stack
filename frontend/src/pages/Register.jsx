@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
+import Registerimg from "../assets/warehouses.avif";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -61,7 +62,7 @@ const Register = () => {
         className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 flex space-x-10"
       >
         <div className="hidden lg:block w-1/2">
-          <img src="src/assets/warehouses.avif" alt="Register" className="rounded-lg" />
+          <img src={Registerimg} alt="Register" className="rounded-lg" />
         </div>
         <div className="w-full lg:w-1/2 space-y-6">
           <h2 className="text-4xl font-bold text-gray-800 text-center">Join Us</h2>

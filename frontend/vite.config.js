@@ -6,12 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // '/api': 'http://localhost:5000',
-      '/api': {
-        target: 'https://inventory-management-system-mern-stack.onrender.com',
-        changeOrigin: true,
-        secure: false,
-      },
+      '/api': 'https://inventory-management-system-mern-stack.onrender.com',
+
     },
   },
 })
