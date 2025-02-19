@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import logining from "../assets/authimg.png";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -28,7 +29,7 @@ const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
 
     try {
       // Send login request
-      const { data } = await axios.post("/api/login", formData);
+      const { data } = await axios.post(`${API_BASE_URL}/api/login`, formData);
 
       // Decode the token to get user details
       const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
