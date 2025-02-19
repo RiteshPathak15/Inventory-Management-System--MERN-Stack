@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // '/api': 'http://localhost:5000',
       '/api': {
-        target: 'https://your-render-backend-url.com',
+        target: 'https://inventory-management-system-mern-stack.onrender.com',
         changeOrigin: true,
         secure: false,
       },
