@@ -35,7 +35,7 @@ An efficient inventory management system for hardware shops, built with the MERN
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-username/Inventory-Management-System--MERN-Stack.git
+   git clone https://github.com/RiteshPathak15/Inventory-Management-System--MERN-Stack.git
    cd Inventory-Management-System--MERN-Stack
    ```
 2. Navigate to the `backend` folder:
@@ -64,7 +64,7 @@ An efficient inventory management system for hardware shops, built with the MERN
 
 ## Option 1: Using Two Terminals
 
-# Terminal 1 (Backend) :
+Terminal 1 (Backend) :
 
 ````cd backend
 npm run dev ```
