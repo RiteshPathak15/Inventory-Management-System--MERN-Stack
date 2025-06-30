@@ -63,7 +63,8 @@ An efficient inventory management system for hardware shops, built with the MERN
    ```
 
 ## Option 1: Using Two Terminals
-``````
+
+````
 # Terminal 1 (Backend) :
 
 ```cd backend
@@ -72,10 +73,11 @@ npm run dev ```
 # Terminal 2 (Frontend):
 ```cd frontend
 npm run dev```
-
+````
 
 ## Option 2: Using Two Terminals
 
+````
 # 1. Install concurrently in the root folder:
 ```npm install concurrently --save-dev```
 
@@ -90,7 +92,7 @@ npm run dev```
 # 3.Run both servers with one command:
 ```npm run dev```
 
-
+````
 
 ## Usage
 
@@ -106,4 +108,3 @@ npm run dev```
 3. Make your changes and commit them: `git commit -m 'Add your feature'`
 4. Push to the branch: `git push origin feature/your-feature`
 5. Create a pull request
-````
