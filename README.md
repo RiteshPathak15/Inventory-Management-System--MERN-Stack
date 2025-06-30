@@ -63,10 +63,10 @@ An efficient inventory management system for hardware shops, built with the MERN
    ```
 
 ## Option 1: Using Two Terminals
+``````
+# Terminal 1 (Backend) :
 
-Terminal 1 (Backend) :
-
-````cd backend
+```cd backend
 npm run dev ```
 
 # Terminal 2 (Frontend):
