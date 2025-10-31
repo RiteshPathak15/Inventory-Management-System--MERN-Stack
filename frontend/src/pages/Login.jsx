@@ -7,7 +7,10 @@ import { motion } from "framer-motion";
 import logining from "../assets/authimg.png";
 
 const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
 
   // Handle input changes
@@ -19,19 +22,22 @@ const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate inputs
-    if (!formData.email || !formData.password) {
-      toast.error("Email and password are required!");
+    // Add email validation
+    if (!formData.email) {
+      toast.error("Email is required");
+      return;
+    }
+
+    if (!formData.email.includes("@")) {
+      toast.error("Please enter a valid email");
       return;
     }
 
     try {
       // Send login request
-      // const { data } = await axios.post("/api/login", formData);
-      // Find axios calls and update the URL:
       const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/login`,
-        userData
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/login`,
+        formData
       );
 
       // Decode the token to get user details
@@ -80,18 +86,19 @@ const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
             <input
               type="email"
               name="email"
-              placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              required
+              className="form-input"
+              placeholder="Enter your email"
             />
             <input
               type="password"
               name="password"
-              placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="form-input"
+              placeholder="Password"
             />
             <button
               type="submit"
