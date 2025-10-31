@@ -16,7 +16,7 @@ const ProfileForm = ({ user, setUser, setMessage }) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.put("/api/profile", formData, {
+      const { data } = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/users/profile`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(data.user);

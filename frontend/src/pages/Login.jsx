@@ -6,7 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import logining from "../assets/authimg.png";
 
-
 const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
@@ -28,7 +27,12 @@ const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
 
     try {
       // Send login request
-      const { data } = await axios.post("/api/login", formData);
+      // const { data } = await axios.post("/api/login", formData);
+      // Find axios calls and update the URL:
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/login`,
+        userData
+      );
 
       // Decode the token to get user details
       const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
@@ -66,8 +70,12 @@ const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
 
         {/* Login Form Section */}
         <div className="w-full lg:w-1/2 space-y-6">
-          <h2 className="text-4xl font-bold text-gray-800 text-center">Welcome Back</h2>
-          <p className="text-center text-gray-600">Log in to access your account</p>
+          <h2 className="text-4xl font-bold text-gray-800 text-center">
+            Welcome Back
+          </h2>
+          <p className="text-center text-gray-600">
+            Log in to access your account
+          </p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="email"

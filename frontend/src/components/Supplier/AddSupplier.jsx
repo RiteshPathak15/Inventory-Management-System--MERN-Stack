@@ -37,15 +37,20 @@ const AddSupplier = ({ fetchSuppliers }) => {
       return;
     }
 
-    const formData = new FormData();
-    Object.keys(supplier).forEach((key) => {
-      formData.append(key, supplier[key]);
-    });
+    const supplierData = {
+      image: supplier.image,
+      name: supplier.name,
+      category: supplier.category,
+      contactNumber: supplier.contactNumber,
+      takesReturns: supplier.takesReturns,
+      email: supplier.email,
+    };
 
     try {
-      await axios.post("/api/suppliers", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/suppliers`,
+        supplierData
+      );
       toast.success("Supplier added successfully!");
       fetchSuppliers(); // Fetch the updated list of suppliers
     } catch (error) {
