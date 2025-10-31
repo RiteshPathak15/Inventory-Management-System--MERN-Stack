@@ -36,7 +36,7 @@ const Login = ({ setIsLoggedIn, setUsername, setIsAdmin }) => {
     try {
       // Send login request
       const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/users/login`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/login`,
         formData
       );
 
