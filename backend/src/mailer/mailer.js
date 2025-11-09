@@ -16,16 +16,18 @@ export const sendMail = async (
   subject
 ) => {
   const mailOptions = {
-    from: process.env.EMAIL,// Sender email address
-    to: recipientEmail, // Recipient email address
+    from: process.env.EMAIL,
+    to: recipientEmail,
     subject: subject,
     html: body,
   };
 
   try {
-    await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully!");
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully!", info);
+    return { success: true, info };
   } catch (error) {
     console.error("Error sending Email:", error);
+    return { success: false, error: error.message || error };
   }
 };

@@ -90,9 +90,12 @@ const registerUser = async (req, res) => {
     });
     await newUser.save();
 
-    await sendMail(email, body, "Welcome to Shanti Store");
+    const mailResult = await sendMail(email, body, "Welcome to Shanti Store");
+    console.log("sendMail result:", mailResult);
+
     res.status(201).json({
       message: "User registered successfully. Please check your email for the OTP.",
+      mailResult,
     });
   } catch (error) {
     console.error("Error with registration:", error);
