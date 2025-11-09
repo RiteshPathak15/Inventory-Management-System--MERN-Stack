@@ -10,7 +10,7 @@ import asyncHandler from "express-async-handler";
 dotenv.config();
 
 // Register User
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { fullname, username, email, password } = req.body;
     const avatarFile = req.file;
@@ -89,16 +89,37 @@ const registerUser = async (req, res) => {
     });
     await newUser.save();
 
-    const mailResult = await sendMail(email, emailHtmlBody, "Your OTP / Welcome");
-    console.log("sendMail result:", mailResult);
+    const emailBody = `
+      <h1>Welcome to Inventory Management System</h1>
+      <p>Your OTP for verification is: ${otp}</p>
+      <p>This OTP will expire in 10 minutes.</p>
+    `;
+
+    const mailResult = await sendMail(
+      email,
+      emailBody,
+      "Verify Your Email - Inventory Management"
+    );
+
+    console.log('Mail sending result:', mailResult);
+
+    if (!mailResult.success) {
+      return res.status(500).json({
+        message: "User registered but email sending failed",
+        error: mailResult.error
+      });
+    }
 
     res.status(201).json({
-      message: "User registered successfully. Please check your email for the OTP.",
-      mailResult,
+      message: "Registration successful! Please check your email for OTP.",
+      mailResult
     });
   } catch (error) {
-    console.error("Error with registration:", error);
-    res.status(500).json({ message: "Server error. Please try again later." });
+    console.error('Registration error:', error);
+    res.status(500).json({
+      message: "Registration failed",
+      error: error.message
+    });
   }
 };
 

@@ -17,6 +17,8 @@ const Register = () => {
   const [avatar, setAvatar] = useState(null);
   const [otp, setOtp] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -29,6 +31,8 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const form = new FormData();
     form.append("fullname", formData.fullname);
     form.append("username", formData.username);
@@ -39,46 +43,78 @@ const Register = () => {
     }
 
     try {
-      const { data } = await axios.post(
-        `${API_BASE}/api/users/register`,
-        form,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await axios.post(`${API_BASE}/api/users/register`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      // check mail result sent by backend
-      if (data.mailResult?.success) {
-        toast.success(data.message);
+      console.log('Registration response:', response.data);
+
+      if (response.data.mailResult?.success) {
+        toast.success(response.data.message);
         setIsOtpSent(true);
       } else {
-        console.error("Mail not sent:", data.mailResult);
-        toast.error(
-          data.mailResult?.error ||
-            "Registration saved but email sending failed"
-        );
-        // optionally show instructions or retry button
+        toast.warning("Registration saved but email verification failed. Please contact support.");
+        console.error('Email error:', response.data.mailResult?.error);
       }
     } catch (error) {
-      console.error("Register error:", error.response?.data || error);
+      console.error('Registration error:', error.response?.data || error);
       toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      const { data } = await axios.post("/api/verify-otp", {
+      const { data } = await axios.post(`${API_BASE}/api/users/verify-otp`, {
         email: formData.email,
         otp,
       });
-      toast.success(data.message);
-      navigate("/login");
+      toast.success("Email verified successfully!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Invalid or expired OTP");
+      console.error("OTP verification error:", error.response?.data || error);
+      toast.error(
+        error.response?.data?.message || "Invalid or expired OTP"
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // Update button render to show loading state
+  const renderButton = () => (
+    <button
+      type="submit"
+      disabled={isLoading}
+      className={`w-full p-3 ${
+        isLoading
+          ? "bg-gray-400"
+          : "bg-blue-600 hover:bg-blue-700"
+      } text-white font-semibold rounded-lg`}
+    >
+      {isLoading ? "Processing..." : "Register"}
+    </button>
+  );
+
+  const renderOtpButton = () => (
+    <button
+      type="submit"
+      disabled={isLoading}
+      className={`w-full p-3 ${
+        isLoading
+          ? "bg-gray-400"
+          : "bg-green-600 hover:bg-green-700"
+      } text-white font-semibold rounded-lg`}
+    >
+      {isLoading ? "Verifying..." : "Verify OTP"}
+    </button>
+  );
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -138,12 +174,7 @@ const Register = () => {
                 onChange={handleFileChange}
                 className="w-full p-3 border border-gray-300 rounded-lg"
               />
-              <button
-                type="submit"
-                className="w-full p-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
-              >
-                Register
-              </button>
+              {renderButton()}
             </form>
           ) : (
             <form onSubmit={handleOtpSubmit} className="space-y-4">
@@ -155,12 +186,7 @@ const Register = () => {
                 onChange={(e) => setOtp(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
-              <button
-                type="submit"
-                className="w-full p-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700"
-              >
-                Verify OTP
-              </button>
+              {renderOtpButton()}
             </form>
           )}
         </div>
