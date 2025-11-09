@@ -42,8 +42,18 @@ const Register = () => {
       const { data } = await axios.post(`${API_BASE}/api/users/register`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success(data.message);
-      setIsOtpSent(true);
+
+      // check mail result sent by backend
+      if (data.mailResult?.success) {
+        toast.success(data.message);
+        setIsOtpSent(true);
+      } else {
+        console.error("Mail not sent:", data.mailResult);
+        toast.error(
+          data.mailResult?.error || "Registration saved but email sending failed"
+        );
+        // optionally show instructions or retry button
+      }
     } catch (error) {
       console.error("Register error:", error.response?.data || error);
       toast.error(error.response?.data?.message || "Registration failed");

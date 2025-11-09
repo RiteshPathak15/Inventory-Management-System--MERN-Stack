@@ -89,6 +89,7 @@ const registerUser = async (req, res) => {
       otpExpiry, // Save OTP expiry time
     });
     await newUser.save();
+
     const mailResult = await sendMail(email, emailHtmlBody, "Your OTP / Welcome");
     console.log("sendMail result:", mailResult);
 

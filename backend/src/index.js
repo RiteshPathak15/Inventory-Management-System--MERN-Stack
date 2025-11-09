@@ -23,15 +23,19 @@ app.use(
   })
 );
 
-// API routes first
+// API routes
 app.use("/api/users", userRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Remove static serving in production since frontend is deployed separately
+// Health check route
 app.get("/", (req, res) => {
-  res.json({ message: "API is running" });
+  res.json({
+    message: "API is running",
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 const PORT = process.env.PORT || 5000;

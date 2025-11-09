@@ -20,8 +20,6 @@ const transporter = nodemailer.createTransport(
       }
 );
 
-// Function to send mail
-// ...existing code...
 export const sendMail = async (recipientEmail, body, subject) => {
   const mailOptions = {
     from: process.env.EMAIL,
@@ -39,3 +37,5 @@ export const sendMail = async (recipientEmail, body, subject) => {
     return { success: false, error: error.message || error };
   }
 };
+
+export default transporter;
