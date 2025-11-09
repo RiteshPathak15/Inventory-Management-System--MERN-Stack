@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import Registerimg from "../assets/warehouses.avif";
 
 const Register = () => {
-  const API_BASE = import.meta.env.VITE_API_BASE_URL || ""; // <- added
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || ""; // ensures production URL used
   const [formData, setFormData] = useState({
     fullname: "",
     username: "",
@@ -29,17 +29,6 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (
-      !formData.fullname ||
-      !formData.username ||
-      !formData.email ||
-      !formData.password
-    ) {
-      toast.error("All fields are required!");
-      return;
-    }
-
     const form = new FormData();
     form.append("fullname", formData.fullname);
     form.append("username", formData.username);
@@ -50,24 +39,21 @@ const Register = () => {
     }
 
     try {
-      const { data } = await axios.post(`${API_BASE}/api/register`, form, {
+      const { data } = await axios.post(`${API_BASE}/api/users/register`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success(data.message);
       setIsOtpSent(true);
     } catch (error) {
       console.error("Register error:", error.response?.data || error);
-      toast.error(
-        error.response?.data?.message || "Error occurred during registration"
-      );
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const { data } = await axios.post(`${API_BASE}/api/verify-otp`, {
+      const { data } = await axios.post(`${API_BASE}/api/users/verify-otp`, {
         email: formData.email,
         otp,
       });

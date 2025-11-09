@@ -30,7 +30,7 @@ const registerUser = async (req, res) => {
     const otp = crypto.randomInt(100000, 999999).toString();
     const otpExpiry = Date.now() + 30 * 60 * 1000; // 30 minutes from now
 
-    const body = `
+    const emailHtmlBody = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -89,8 +89,7 @@ const registerUser = async (req, res) => {
       otpExpiry, // Save OTP expiry time
     });
     await newUser.save();
-
-    const mailResult = await sendMail(email, body, "Welcome to Shanti Store");
+    const mailResult = await sendMail(email, emailHtmlBody, "Your OTP / Welcome");
     console.log("sendMail result:", mailResult);
 
     res.status(201).json({
