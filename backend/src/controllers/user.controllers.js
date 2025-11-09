@@ -26,11 +26,10 @@ const registerUser = async (req, res) => {
         .json({ message: "Email or username already registered" });
     }
 
-    // Generate OTP
     const otp = crypto.randomInt(100000, 999999).toString();
     const otpExpiry = Date.now() + 30 * 60 * 1000; // 30 minutes from now
 
-    const emailHtmlBody = `
+    const body = `
       <!DOCTYPE html>
       <html>
       <head>

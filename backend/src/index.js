@@ -28,6 +28,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api", userRoutes);
 
 // Health check route
 app.get("/", (req, res) => {

@@ -39,9 +39,13 @@ const Register = () => {
     }
 
     try {
-      const { data } = await axios.post(`${API_BASE}/api/users/register`, form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const { data } = await axios.post(
+        `${API_BASE}/api/users/register`,
+        form,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       // check mail result sent by backend
       if (data.mailResult?.success) {
@@ -50,7 +54,8 @@ const Register = () => {
       } else {
         console.error("Mail not sent:", data.mailResult);
         toast.error(
-          data.mailResult?.error || "Registration saved but email sending failed"
+          data.mailResult?.error ||
+            "Registration saved but email sending failed"
         );
         // optionally show instructions or retry button
       }
@@ -62,15 +67,15 @@ const Register = () => {
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const { data } = await axios.post(`${API_BASE}/api/users/verify-otp`, {
+      const { data } = await axios.post("/api/verify-otp", {
         email: formData.email,
         otp,
       });
       toast.success(data.message);
       navigate("/login");
     } catch (error) {
-      console.error("Verify OTP error:", error.response?.data || error);
       toast.error(error.response?.data?.message || "Invalid or expired OTP");
     }
   };
