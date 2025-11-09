@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Registerimg from "../assets/warehouses.avif";
 
 const Register = () => {
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || ""; // <- added
   const [formData, setFormData] = useState({
     fullname: "",
     username: "",
@@ -49,12 +50,13 @@ const Register = () => {
     }
 
     try {
-      const { data } = await axios.post("/api/register", form, {
+      const { data } = await axios.post(`${API_BASE}/api/register`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success(data.message);
       setIsOtpSent(true);
     } catch (error) {
+      console.error("Register error:", error.response?.data || error);
       toast.error(
         error.response?.data?.message || "Error occurred during registration"
       );
@@ -65,13 +67,14 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post("/api/verify-otp", {
+      const { data } = await axios.post(`${API_BASE}/api/verify-otp`, {
         email: formData.email,
         otp,
       });
       toast.success(data.message);
       navigate("/login");
     } catch (error) {
+      console.error("Verify OTP error:", error.response?.data || error);
       toast.error(error.response?.data?.message || "Invalid or expired OTP");
     }
   };
