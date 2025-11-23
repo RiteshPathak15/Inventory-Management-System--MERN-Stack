@@ -66,27 +66,12 @@ const NewOrder = ({ onOrderAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //  try {
-    //   const response = await axios.post("/api/orders", order, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   });
-    //   onOrderAdded(response.data.newOrder);
-    //   navigate("/orders");
-    // } catch (error) {
-    //   console.error("Error adding order:", error);
-    // }
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/orders`,
-        order,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post("/api/orders", order, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       onOrderAdded(response.data.newOrder);
       navigate("/orders");
     } catch (error) {

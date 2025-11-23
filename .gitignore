@@ -1,24 +1,3 @@
-# Dependencies
-node_modules/
-/.pnp
-.pnp.js
-
-# Production builds
-/dist
-/build
-/frontend/dist
-/backend/dist
-dist-ssr
-*.local
-
-# Environment files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.production
-
 # Logs
 logs
 *.log
@@ -28,34 +7,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Testing
-/coverage
+dist
+dist-ssr
+*.local
+workflow.drawio
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-!.vscode/settings.json
-.idea/
+.idea
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-# Optional
-*.pem
-.vercel
-.netlify
-workflow.drawio
-
-# OS generated files
-.DS_Store*
-ehthumbs.db
-Icon?
-Thumbs.db
-
-# Temporary files
-*.temp
-*.tmp
-.cache/

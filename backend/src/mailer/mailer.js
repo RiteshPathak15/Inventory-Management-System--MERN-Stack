@@ -1,32 +1,31 @@
 import nodemailer from "nodemailer";
 
+// Create a transporter object using SMTP transport
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: "gmail", // or any other email service
   auth: {
     user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASSWORD, // Use App Password if 2FA is enabled
+    pass: process.env.EMAIL_PASSWORD,
   },
-  debug: true, // Enable debug logs
-  logger: true, // Enable logger
 });
 
-export const sendMail = async (recipientEmail, body, subject) => {
+// Function to send OTP
+export const sendMail = async (
+  recipientEmail,
+  body,
+  subject
+) => {
   const mailOptions = {
-    from: process.env.EMAIL,
-    to: recipientEmail,
-    subject,
+    from: process.env.EMAIL,// Sender email address
+    to: recipientEmail, // Recipient email address
+    subject: subject,
     html: body,
   };
 
   try {
-    console.log("Attempting to send email to:", recipientEmail);
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully:", info);
-    return { success: true, info };
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully!");
   } catch (error) {
-    console.error("Email send error:", error);
-    return { success: false, error: error.message };
+    console.error("Error sending Email:", error);
   }
 };
-
-export default transporter;

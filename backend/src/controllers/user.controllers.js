@@ -5,12 +5,12 @@ import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import dotenv from "dotenv";
 import { sendMail } from "../mailer/mailer.js";
 import crypto from "crypto";
-import asyncHandler from "express-async-handler";
 
 dotenv.config();
 
+
 // Register User
-export const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { fullname, username, email, password } = req.body;
     const avatarFile = req.file;
@@ -26,6 +26,7 @@ export const registerUser = async (req, res) => {
         .json({ message: "Email or username already registered" });
     }
 
+    // Generate OTP
     const otp = crypto.randomInt(100000, 999999).toString();
     const otpExpiry = Date.now() + 30 * 60 * 1000; // 30 minutes from now
 
@@ -88,38 +89,12 @@ export const registerUser = async (req, res) => {
       otpExpiry, // Save OTP expiry time
     });
     await newUser.save();
-
-    const emailBody = `
-      <h1>Welcome to Inventory Management System</h1>
-      <p>Your OTP for verification is: ${otp}</p>
-      <p>This OTP will expire in 10 minutes.</p>
-    `;
-
-    const mailResult = await sendMail(
-      email,
-      emailBody,
-      "Verify Your Email - Inventory Management"
-    );
-
-    console.log('Mail sending result:', mailResult);
-
-    if (!mailResult.success) {
-      return res.status(500).json({
-        message: "User registered but email sending failed",
-        error: mailResult.error
-      });
-    }
-
-    res.status(201).json({
-      message: "Registration successful! Please check your email for OTP.",
-      mailResult
-    });
+    
+    await sendMail(email, body, "Welcome to Shanti Store");
+    res.status(201).json({ message: "User registered successfully. Please check your email for the OTP." });
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({
-      message: "Registration failed",
-      error: error.message
-    });
+    console.error("Error with registration:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
 
@@ -151,71 +126,80 @@ const verifyOtp = async (req, res) => {
 };
 
 // Login User
-const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+const loginUser = async (req, res) => {
+  try {
+    const { email, username, password } = req.body;
 
-  // Add server-side validation
-  if (!email || !password) {
-    res.status(400);
-    throw new Error("Email and password are required");
+    // Validation
+    if (!email && !username) {
+      return res.status(400).json({ message: "Email or username is required" });
+    }
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+
+    // Find user by email or username
+    const user = await User.findOne({
+      $or: [{ email }, { username }],
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Validate password
+    const isPasswordCorrect = await bcryptjs.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Generate new tokens
+    const accessToken = jwt.sign(
+      {
+        _id: user._id,
+        fullname: user.fullname,
+        username: user.username,
+        role: user.role,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m" }
+    );
+    const refreshToken = jwt.sign(
+      { _id: user._id },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" }
+    );
+
+    // Update user with the new refresh token
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    // Set cookies
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Strict",
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Strict",
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      token: accessToken, // Sending the access token in response
+      user: {
+        id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        username: user.username,
+      },
+    });
+  } catch (error) {
+    console.error("Error in loginUser:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
-
-  // Find user by email or username
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  // Validate password
-  const isPasswordCorrect = await bcryptjs.compare(password, user.password);
-  if (!isPasswordCorrect) {
-    return res.status(400).json({ message: "Invalid credentials" });
-  }
-
-  // Generate new tokens
-  const accessToken = jwt.sign(
-    {
-      _id: user._id,
-      fullname: user.fullname,
-      username: user.username,
-      role: user.role,
-    },
-    process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m" }
-  );
-  const refreshToken = jwt.sign(
-    { _id: user._id },
-    process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" }
-  );
-
-  // Update user with the new refresh token
-  user.refreshToken = refreshToken;
-  await user.save();
-
-  // Set cookies
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "Strict",
-  });
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "Strict",
-  });
-
-  res.status(200).json({
-    message: "Login successful",
-    token: accessToken, // Sending the access token in response
-    user: {
-      id: user._id,
-      fullname: user.fullname,
-      email: user.email,
-      username: user.username,
-    },
-  });
-});
+};
 
 // Logout User
 const logoutUser = async (req, res) => {
